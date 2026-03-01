@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Roboto, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
+import { Header } from "@/components/layout/Header/Header";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${geistMono.variable} font-sans antialiased`}
       >
+        <Header />
         {children}
       </body>
     </html>
