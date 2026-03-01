@@ -50,7 +50,7 @@ export function HomeCategories() {
             initial="initial"
             whileInView="animate"
             viewport={inViewStaggerContainer.viewport}
-            className="flex flex-col rounded-xl bg-[#223645] p-5 text-white"
+            className="flex flex-col rounded-xl bg-[#36807f] p-5 text-white"
             whileHover={cardHover.hover}
             whileTap={cardHover.tap}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}

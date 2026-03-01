@@ -21,7 +21,7 @@ export function ReviewsSection() {
 
   return (
     <motion.section
-      className="bg-[#00a9bf] py-16 md:py-20"
+      className="bg-[#36807f] py-16 md:py-20"
       initial={inViewFadeUp.initial}
       whileInView={inViewFadeUp.whileInView}
       viewport={inViewFadeUp.viewport}

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { fadeInUp } from "@/lib/animations"
 import { ArrowRight } from "lucide-react"
+import { trackCtaClick } from "@/lib/analytics"
 
 type HeroProps = {
   imageSrc: import("next/image").StaticImageData
@@ -51,7 +52,7 @@ export function HomeHero({ imageSrc }: HeroProps) {
             asChild
             size="sm"
             className="h-9 rounded-full bg-[#00a9bf] px-3 sm:px-4 text-white hover:bg-[#0095a8] shrink-0 text-sm"
-            onClick={() => trackCtaClick("header")}
+            onClick={() => trackCtaClick("home-hero")}
           >
             <Link href="/#cta" className="inline-flex items-center gap-1">
               Записаться
