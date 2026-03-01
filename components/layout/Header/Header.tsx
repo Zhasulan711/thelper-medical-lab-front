@@ -1,78 +1,147 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ArrowBigRight, Camera, Menu, X } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { TestTube2, Menu, X, Phone, ArrowRight } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { trackPhoneClick, trackCtaClick } from "@/lib/analytics"
 
 const NAV_ITEMS = [
     { path: "/services", label: "Анализы" },
     { path: "/prices", label: "Цены" },
     { path: "/locations", label: "Филиалы" },
     { path: "/about", label: "О нас" },
+    { path: "/blog", label: "Блог" },
     { path: "/promotions", label: "Акции" },
+    { path: "/business", label: "B2B" },
+    { path: "/documents", label: "Документы" },
     { path: "/contacts", label: "Контакты" },
 ] as const
 
-export const Header = () => {
-    const router = useRouter()
+const PHONE = "+7 (777) 777-77-77"
+const PHONE_HREF = "tel:+77777777777"
+
+export function Header() {
+    const pathname = usePathname()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-    const go = (path: string) => {
-        router.push(path)
-        setIsMenuOpen(false)
-    }
-
     return (
-        <header className="relative max-w-293 mx-auto flex justify-between items-center border-b pt-[0.938rem] pb-[0.938rem] text-lg">
-            <Camera width={70} height={70} onClick={() => router.push("/")} />
-
-            <nav className="hidden gap-2 items-center md:flex text-base lg:text-lg">
-                {NAV_ITEMS.map(({ path, label }) => (
-                    <span key={path} onClick={() => router.push(path)} className="cursor-pointer">
-                        {label}
+        <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+                <Link
+                    href="/"
+                    className="flex items-center gap-2 shrink-0 transition-opacity hover:opacity-90"
+                    aria-label="T-Helper — на главную"
+                >
+                    <span className="flex size-9 items-center justify-center rounded-lg bg-[#00a9bf]/10 text-[#00a9bf]">
+                        <TestTube2 className="size-5" aria-hidden />
                     </span>
-                ))}
-            </nav>
-            <Button
-                type="button"
-                className="p-2 md:hidden"
-                aria-label={isMenuOpen ? "Закрыть меню" : "Открыть меню"}
-                aria-expanded={isMenuOpen}
-                onClick={() => setIsMenuOpen((v) => !v)}
-            >
-                {isMenuOpen ? (
-                    <X className="size-5 text-[#00a9bf]" />
-                ) : (
-                    <Menu className="size-5 text-[#00a9bf]" />
-                )}
-            </Button>
+                    <span className="text-xl font-semibold text-foreground">
+                        T-Helper
+                    </span>
+                </Link>
 
-            <div className="flex items-center gap-2 text-[#00a9bf]">
+                <nav
+                    className="hidden lg:flex items-center gap-1"
+                    aria-label="Основное меню"
+                >
+                    {NAV_ITEMS.map(({ path, label }) => {
+                        const isActive = pathname === path || pathname.startsWith(path + "/")
+                        return (
+                            <Link
+                                key={path}
+                                href={path}
+                                className={cn(
+                                    "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                    isActive
+                                        ? "text-[#00a9bf] bg-[#00a9bf]/5"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                )}
+                            >
+                                {label}
+                            </Link>
+                        )
+                    })}
+                </nav>
 
-                <span className="hidden sm:inline">+7 (777) 777-77-77</span>
-                <Button className="pt-5 pb-5 pr-10 pl-10 flex gap-2 items-center rounded-full cursor-pointer bg-white border border-[#00a9bf] hover:bg-[#00a9bf] hover:text-white">
-                    <span className="text-black">Записаться</span>
-                    <ArrowBigRight className="text-black" />
-                </Button>
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <a
+                        href={PHONE_HREF}
+                        onClick={trackPhoneClick}
+                        className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-[#00a9bf] hover:text-[#0095a8] transition-colors whitespace-nowrap"
+                    >
+                        <Phone className="size-4 shrink-0" aria-hidden />
+                        {PHONE}
+                    </a>
+                    <Button
+                        asChild
+                        size="sm"
+                        className="h-9 rounded-full bg-[#00a9bf] px-3 sm:px-4 text-white hover:bg-[#0095a8] shrink-0 text-sm"
+                        onClick={() => trackCtaClick("header")}
+                    >
+                        <Link href="/#cta" className="inline-flex items-center gap-1">
+                            Записаться
+                            <ArrowRight className="size-4 shrink-0" aria-hidden />
+                        </Link>
+                    </Button>
+
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="lg:hidden shrink-0 text-[#00a9bf] hover:bg-[#00a9bf]/10"
+                        aria-label={isMenuOpen ? "Закрыть меню" : "Открыть меню"}
+                        aria-expanded={isMenuOpen}
+                        onClick={() => setIsMenuOpen((v) => !v)}
+                    >
+                        {isMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+                    </Button>
+                </div>
             </div>
 
             {isMenuOpen && (
-                <nav
-                    className="absolute left-0 right-0 top-full z-50 flex flex-col gap-2 border-b border-border bg-background px-87.5 py-4 md:hidden"
-                    aria-label="Меню"
+                <div
+                    className="lg:hidden border-t border-border bg-background"
+                    role="dialog"
+                    aria-label="Мобильное меню"
                 >
-                    {NAV_ITEMS.map(({ path, label }) => (
-                        <button
-                            key={path}
-                            type="button"
-                            className="text-left text-[#00a9bf] hover:underline"
-                            onClick={() => go(path)}
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </nav>
+                    <nav className="mx-auto max-w-7xl flex flex-col px-4 py-4 gap-0.5" aria-label="Меню">
+                        {NAV_ITEMS.map(({ path, label }) => {
+                            const isActive = pathname === path || pathname.startsWith(path)
+                            return (
+                                <Link
+                                    key={path}
+                                    href={path}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className={cn(
+                                        "rounded-lg px-4 py-3 text-base font-medium transition-colors",
+                                        isActive ? "bg-[#00a9bf]/10 text-[#00a9bf]" : "text-foreground hover:bg-muted"
+                                    )}
+                                >
+                                    {label}
+                                </Link>
+                            )
+                        })}
+                        <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
+                            <a
+                                href={PHONE_HREF}
+                                onClick={() => { trackPhoneClick(); setIsMenuOpen(false) }}
+                                className="flex items-center gap-2 rounded-lg px-4 py-3 text-[#00a9bf] font-medium"
+                            >
+                                <Phone className="size-4" />
+                                {PHONE}
+                            </a>
+                            <Button asChild className="w-full rounded-full bg-[#00a9bf] text-white hover:bg-[#0095a8]">
+                                <Link href="/#cta" onClick={() => setIsMenuOpen(false)}>
+                                    Записаться
+                                    <ArrowRight className="ml-2 size-4" />
+                                </Link>
+                            </Button>
+                        </div>
+                    </nav>
+                </div>
             )}
         </header>
     )
