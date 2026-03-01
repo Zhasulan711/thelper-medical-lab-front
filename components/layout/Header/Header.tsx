@@ -30,12 +30,18 @@ export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     return (
-        <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 <Link
                     href="/"
                     className="flex items-center gap-2 shrink-0 transition-opacity hover:opacity-90 cursor-pointer"
                     aria-label="T-Helper — на главную"
+                    onClick={(e) => {
+                        if (pathname === "/") {
+                            e.preventDefault()
+                            window.scrollTo({ top: 0, behavior: "smooth" })
+                        }
+                    }}
                 >
                     <span className="flex size-9 items-center justify-center rounded-lg bg-[#00a9bf]/10 text-[#00a9bf]">
                         <TestTube2 className="size-5" aria-hidden />
@@ -81,9 +87,18 @@ export function Header() {
                         asChild
                         size="sm"
                         className="h-9 rounded-full bg-[#00a9bf] px-3 sm:px-4 text-white hover:bg-[#0095a8] shrink-0 text-sm"
-                        onClick={() => trackCtaClick("header")}
                     >
-                        <Link href="/#cta" className="inline-flex items-center gap-1">
+                        <Link
+                            href="/#cta"
+                            className="inline-flex items-center gap-1"
+                            onClick={(e) => {
+                                if (pathname === "/") {
+                                    e.preventDefault()
+                                    document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" })
+                                }
+                                trackCtaClick("header")
+                            }}
+                        >
                             Записаться
                             <ArrowRight className="size-4 shrink-0" aria-hidden />
                         </Link>
@@ -142,7 +157,17 @@ export function Header() {
                                 {PHONE}
                             </a>
                             <Button asChild className="w-full rounded-full bg-[#00a9bf] text-white hover:bg-[#0095a8]">
-                                <Link href="/#cta" onClick={() => setIsMenuOpen(false)}>
+                                <Link
+                                    href="/#cta"
+                                    onClick={(e) => {
+                                        if (pathname === "/") {
+                                            e.preventDefault()
+                                            document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" })
+                                        }
+                                        trackCtaClick("header")
+                                        setIsMenuOpen(false)
+                                    }}
+                                >
                                     Записаться
                                     <ArrowRight className="ml-2 size-4" />
                                 </Link>

@@ -6,7 +6,7 @@ import { inViewFadeUp, staggerContainer, staggerItem } from "@/lib/animations"
 export function HomeStatsWhy() {
   return (
     <motion.div
-      className="mx-auto flex max-w-293 flex-col gap-10 px-4 py-16 md:flex-row md:items-center md:justify-between md:gap-12"
+      className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-16 md:flex-row md:items-center md:justify-between md:gap-12"
       initial={inViewFadeUp.initial}
       whileInView={inViewFadeUp.whileInView}
       viewport={inViewFadeUp.viewport}

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { fadeInUp } from "@/lib/animations"
 import { ArrowRight } from "lucide-react"
@@ -13,6 +14,8 @@ type HeroProps = {
 }
 
 export function HomeHero({ imageSrc }: HeroProps) {
+  const pathname = usePathname()
+
   return (
     <div className="relative h-[724px] w-full overflow-hidden">
       <Image
@@ -52,9 +55,18 @@ export function HomeHero({ imageSrc }: HeroProps) {
             asChild
             size="sm"
             className="h-9 rounded-full bg-[#00a9bf] px-3 sm:px-4 text-white hover:bg-[#0095a8] shrink-0 text-sm"
-            onClick={() => trackCtaClick("home-hero")}
           >
-            <Link href="/#cta" className="inline-flex items-center gap-1">
+            <Link
+              href="/#cta"
+              className="inline-flex items-center gap-1"
+              onClick={(e) => {
+                if (pathname === "/") {
+                  e.preventDefault()
+                  document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" })
+                }
+                trackCtaClick("home-hero")
+              }}
+            >
               Записаться
               <ArrowRight className="size-4 shrink-0" aria-hidden />
             </Link>

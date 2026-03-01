@@ -2,20 +2,14 @@
 
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowRight, Heart, Brain, TestTube2, Eye } from "lucide-react"
+import { ArrowRight, TestTube2 } from "lucide-react"
 import { inViewStaggerContainer, staggerItem, cardHover } from "@/lib/animations"
-
-const CATEGORIES = [
-  { icon: Heart, name: "Кардиология", desc: "Исследования сердца и сосудов для оценки рисков и контроля лечения." },
-  { icon: Brain, name: "Неврология", desc: "Анализы и тесты для диагностики неврологических заболеваний." },
-  { icon: TestTube2, name: "Общие анализы", desc: "Клинические и биохимические исследования крови и мочи." },
-  { icon: Eye, name: "Офтальмология", desc: "Скрининг и диагностика заболеваний органов зрения." },
-] as const
+import { CATEGORIES } from "@/features/services/constants"
 
 export function HomeCategories() {
   return (
     <motion.section
-      className="mx-auto flex max-w-293 flex-col gap-10 px-4 py-16 md:flex-row md:items-start md:justify-between md:gap-12"
+      className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-16 md:flex-row md:items-start md:justify-between md:gap-12"
       initial={inViewStaggerContainer.initial}
       whileInView={inViewStaggerContainer.whileInView}
       viewport={inViewStaggerContainer.viewport}
@@ -43,9 +37,9 @@ export function HomeCategories() {
       </div>
 
       <div className="grid w-full grid-cols-2 gap-4 md:max-w-[520px]">
-        {CATEGORIES.map(({ icon: Icon, name, desc }) => (
+        {CATEGORIES.slice(0, 4).map((cat) => (
           <motion.div
-            key={name}
+            key={cat.slug}
             variants={staggerItem}
             initial="initial"
             whileInView="animate"
@@ -55,11 +49,16 @@ export function HomeCategories() {
             whileTap={cardHover.tap}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            <div className="flex size-14 items-center justify-center rounded-lg bg-white/15">
-              <Icon className="size-7 text-white" />
-            </div>
-            <h3 className="mt-4 font-bold">{name}</h3>
-            <p className="mt-2 text-sm text-white/80">{desc}</p>
+            <Link href={`/services/${cat.slug}`} className="flex h-full flex-col cursor-pointer">
+              <div className="flex size-14 items-center justify-center rounded-lg bg-white/15">
+                <TestTube2 className="size-7 text-white" />
+              </div>
+              <h3 className="mt-4 font-bold">{cat.name}</h3>
+              <p className="mt-2 text-sm text-white/80 line-clamp-2">{cat.description}</p>
+              <span className="mt-3 text-xs font-medium text-white/90">
+                {cat.analysisCount} {cat.analysisCount === 1 ? "анализ" : "анализов"}
+              </span>
+            </Link>
           </motion.div>
         ))}
       </div>
