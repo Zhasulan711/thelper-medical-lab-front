@@ -1,4 +1,6 @@
 import type { ContactPhone, ContactMessenger, Requisites } from "@/features/contacts/types"
+import { TelegramIcon } from "@/components/icons/TelegramIcon"
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon"
 
 export const CONTACT_PHONES: ContactPhone[] = [
   { label: "Единый номер", value: "+7 (777) 777-77-77", href: "tel:+77777777777" },
@@ -8,8 +10,8 @@ export const CONTACT_PHONES: ContactPhone[] = [
 export const CONTACT_EMAIL = "info@thelper.kz"
 
 export const CONTACT_MESSENGERS: ContactMessenger[] = [
-  { label: "Telegram", href: "https://t.me/thelper_lab", icon: "TG" },
-  { label: "WhatsApp", href: "https://wa.me/77777777777", icon: "WA" },
+  { label: "Telegram", href: "https://t.me/thelper_lab", Icon: TelegramIcon },
+  { label: "WhatsApp", href: "https://wa.me/77777777777", Icon: WhatsAppIcon },
 ]
 
 export const CONTACT_ADDRESS = "г. Алматы, ул. Примерная, 1"

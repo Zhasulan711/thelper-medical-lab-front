@@ -66,15 +66,15 @@ export default function ContactsPage() {
                 Мессенджеры
               </h2>
               <ul className="flex flex-wrap gap-3">
-                {CONTACT_MESSENGERS.map(({ label, href, icon }) => (
-                  <li key={icon}>
+                {CONTACT_MESSENGERS.map(({ label, href, Icon }) => (
+                  <li key={label}>
                     <a
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white hover:border-[#00a9bf] cursor-pointer"
                     >
-                      {icon} {label}
+                      <Icon className="size-5 shrink-0" /> {label}
                     </a>
                   </li>
                 ))}

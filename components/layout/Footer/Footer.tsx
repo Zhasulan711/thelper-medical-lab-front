@@ -3,9 +3,12 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Phone, Mail, MapPin } from "lucide-react"
+import { TelegramIcon } from "@/components/icons/TelegramIcon"
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon"
 import { inViewStaggerContainer, staggerItem } from "@/lib/animations"
+import type { DefaultIconComponent as IconComponent } from "@/types"
 
-const FOOTER_NAV = [
+const FOOTER_NAV: readonly { href: string; label: string }[] = [
   { href: "/services", label: "Анализы" },
   { href: "/prices", label: "Цены" },
   { href: "/locations", label: "Филиалы" },
@@ -14,18 +17,18 @@ const FOOTER_NAV = [
   { href: "/promotions", label: "Акции" },
   { href: "/business", label: "Корпоративным клиентам" },
   { href: "/contacts", label: "Контакты" },
-] as const
+]
 
-const FOOTER_DOCS = [
+const FOOTER_DOCS: readonly { href: string; label: string }[] = [
   { href: "/documents", label: "Документы" },
   { href: "/documents/privacy", label: "Политика конфиденциальности" },
   { href: "/documents/offer", label: "Договор оферты" },
-] as const
+]
 
-const SOCIAL_LINKS = [
-  { href: "#", label: "Telegram", icon: "TG" },
-  { href: "#", label: "WhatsApp", icon: "WA" },
-] as const
+const FOOTER_SOCIAL_LINKS: { href: string; label: string; Icon: IconComponent }[] = [
+  { href: "https://t.me/your_username", label: "Telegram", Icon: TelegramIcon },
+  { href: "https://wa.me/77000000000", label: "WhatsApp", Icon: WhatsAppIcon },
+]
 
 export function Footer() {
   return (
@@ -94,16 +97,16 @@ export function Footer() {
               Мы в соцсетях
             </h3>
             <ul className="mt-4 flex gap-3">
-              {SOCIAL_LINKS.map(({ href, label, icon }) => (
-                <li key={icon}>
+              {FOOTER_SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <li key={label}>
                   <a
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-muted text-sm font-medium text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white"
+                    className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-muted text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white"
                     aria-label={label}
                   >
-                    {icon}
+                    <Icon className="size-5" />
                   </a>
                 </li>
               ))}

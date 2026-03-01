@@ -1,4 +1,4 @@
-import type { MouseEventHandler } from "react";
+import type { ComponentType, MouseEventHandler } from "react";
 
 export type DefaultIconComponentProps = {
   width?: number | string;
@@ -8,3 +8,5 @@ export type DefaultIconComponentProps = {
   className?: string;
   filled?: boolean;
 };
+
+export type DefaultIconComponent = ComponentType<DefaultIconComponentProps>;

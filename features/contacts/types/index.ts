@@ -1,3 +1,5 @@
+import type { DefaultIconComponent } from "@/types"
+
 export type ContactPhone = {
   label: string
   value: string
@@ -7,7 +9,7 @@ export type ContactPhone = {
 export type ContactMessenger = {
   label: string
   href: string
-  icon: string
+  Icon: DefaultIconComponent
 }
 
 export type Requisites = {
