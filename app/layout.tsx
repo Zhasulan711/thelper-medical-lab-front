@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Roboto, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
-import { Header } from "@/components/layout/header/Header";
-import { Footer } from "@/components/layout/footer/Footer";
+import { Header } from "@/components/layout/Header/Header";
+import { Footer } from "@/components/layout/Footer/Footer";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
