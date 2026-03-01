@@ -10,7 +10,6 @@ const CATEGORY_BASE: Omit<Category, "analysisCount">[] = [
   { slug: "dopolnitelno", name: "Дополнительно", description: "Забор крови и др.", isCheckup: false },
 ]
 
-/** Подкатегории по прайсу (Инфекции — Хламидии, Вирусные и т.д.; Гормоны — Репродуктивные, Щитовидная железа) */
 export const SUBCATEGORIES: Subcategory[] = [
   { slug: "hlamidii", name: "Хламидии", categorySlug: "infekcii" },
   { slug: "drugie-urogenitalnye", name: "Другие урогенитальные инфекции", categorySlug: "infekcii" },
@@ -21,7 +20,6 @@ export const SUBCATEGORIES: Subcategory[] = [
   { slug: "shhitovidnaja", name: "Щитовидная железа", categorySlug: "gormony" },
 ]
 
-/** Названия групп внутри подкатегории для отображения заголовка блока */
 export const SUBGROUP_DISPLAY_NAMES: Record<string, Record<string, string>> = {
   hlamidii: {
     "chlamydia-trachomatis": "Chlamydia trachomatis",
@@ -169,7 +167,6 @@ export const ANALYZES: Analyze[] = [
   { slug: "zabor-krovi", name: "Забор крови", categorySlug: "dopolnitelno", priceFrom: 500, duration: DURATION_1, material: MATERIAL_BLOOD },
 ]
 
-/** Категории с количеством анализов, посчитанным по ANALYZES */
 export const CATEGORIES: Category[] = CATEGORY_BASE.map((cat) => ({
   ...cat,
   analysisCount: ANALYZES.filter((a) => a.categorySlug === cat.slug).length,
@@ -191,7 +188,6 @@ export function getSubgroupDisplayName(subcategorySlug: string, groupKey: string
   return SUBGROUP_DISPLAY_NAMES[subcategorySlug]?.[groupKey] ?? groupKey
 }
 
-/** Анализы категории, сгруппированные по подкатегориям и группам (для категорий с подкатегориями) */
 export function getAnalyzesGroupedBySubcategory(categorySlug: string): {
   subcategory: Subcategory
   groups: { groupKey: string; groupName: string; analyzes: Analyze[] }[]
@@ -212,19 +208,16 @@ export function getAnalyzesGroupedBySubcategory(categorySlug: string): {
   })
 }
 
-/** Анализы одной подкатегории (для страницы подкатегории) */
 export function getAnalyzesBySubcategory(subcategorySlug: string): Analyze[] {
   return ANALYZES.filter((a) => a.subcategorySlug === subcategorySlug)
 }
 
-/** Анализы одной группы внутри подкатегории (для страницы группы) */
 export function getAnalyzesByGroup(subcategorySlug: string, groupKey: string): Analyze[] {
   return ANALYZES.filter(
     (a) => a.subcategorySlug === subcategorySlug && a.groupKey === groupKey
   )
 }
 
-/** Дерево категорий для сайдбара: категория → подкатегории → группы */
 export function getCategoryTree(): {
   slug: string
   name: string
@@ -260,7 +253,6 @@ export function getCategoryTree(): {
   })
 }
 
-/** Группы анализов внутри подкатегории (для страницы подкатегории) */
 export function getGroupsForSubcategory(subcategorySlug: string): {
   groupKey: string
   groupName: string

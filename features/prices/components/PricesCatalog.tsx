@@ -10,13 +10,17 @@ import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 import type { Analyze, Category } from "@/features/services/types"
 import { inViewFadeUp } from "@/lib/animations"
+import { AnalysesPagination } from "@/features/services/components/AnalysesPagination"
+
+const PAGE_SIZE = 8
 
 type PricesCatalogProps = {
   analyzes: Analyze[]
   categories: Category[]
+  currentPage?: number
 }
 
-export function PricesCatalog({ analyzes, categories }: PricesCatalogProps) {
+export function PricesCatalog({ analyzes, categories, currentPage: initialPage = 1 }: PricesCatalogProps) {
   const [query, setQuery] = useState("")
   const [categorySlug, setCategorySlug] = useState<string>("")
 
@@ -40,6 +44,14 @@ export function PricesCatalog({ analyzes, categories }: PricesCatalogProps) {
     }
     return list
   }, [analyzes, categorySlug, query])
+
+  const totalItems = filtered.length
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
+  const currentPage = Math.min(Math.max(1, initialPage), totalPages)
+  const paginated = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage]
+  )
 
   const handleDownloadPdf = useCallback(() => {
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" })
@@ -134,7 +146,7 @@ export function PricesCatalog({ analyzes, categories }: PricesCatalogProps) {
                 </td>
               </tr>
             ) : (
-              filtered.map((a) => (
+              paginated.map((a) => (
                 <tr
                   key={a.slug}
                   className="border-b border-border/80 transition-colors hover:bg-muted/30"
@@ -165,10 +177,19 @@ export function PricesCatalog({ analyzes, categories }: PricesCatalogProps) {
         </table>
       </div>
 
+      {totalItems > 0 && (
+        <AnalysesPagination
+          basePath="/prices"
+          currentPage={currentPage}
+          totalItems={totalItems}
+          pageSize={PAGE_SIZE}
+        />
+      )}
+
       <p className="text-xs text-muted-foreground">
-        Показано позиций: {filtered.length}
+        Показано: {totalItems === 0 ? 0 : `${(currentPage - 1) * PAGE_SIZE + 1}–${Math.min(currentPage * PAGE_SIZE, totalItems)} из ${totalItems}`}
         {filtered.length !== analyzes.length &&
-          ` из ${analyzes.length}. Цены ориентировочные, актуальность уточняйте в лаборатории.`}
+          ` (всего в прайсе ${analyzes.length}). Цены ориентировочные, актуальность уточняйте в лаборатории.`}
       </p>
     </motion.div>
   )

@@ -8,7 +8,12 @@ export const metadata = {
     "Актуальный прайс-лист лаборатории T-Helper. Поиск и фильтр по категориям. Скачать прайс в PDF.",
 }
 
-export default function PricesPage() {
+type Props = { searchParams: Promise<{ page?: string }> }
+
+export default async function PricesPage({ searchParams }: Props) {
+  const { page: pageParam } = await searchParams
+  const currentPage = Math.max(1, parseInt(String(pageParam ?? "1"), 10) || 1)
+
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl px-4 py-6 md:py-8">
@@ -28,7 +33,7 @@ export default function PricesPage() {
           Ориентировочные цены на лабораторные исследования. Точную стоимость и сроки уточняйте при записи.
         </p>
 
-        <PricesCatalog analyzes={ANALYZES} categories={CATEGORIES} />
+        <PricesCatalog analyzes={ANALYZES} categories={CATEGORIES} currentPage={currentPage} />
       </div>
     </main>
   )

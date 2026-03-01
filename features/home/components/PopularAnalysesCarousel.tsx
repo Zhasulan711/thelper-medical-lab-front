@@ -32,7 +32,7 @@ export function PopularAnalysesCarousel() {
       </h2>
 
       <div className="relative">
-        <div className="h-[200px] overflow-hidden">
+        <div className="h-[170px] overflow-hidden">
           <motion.div
             className="flex h-full items-stretch gap-4"
             style={{ width: "max-content" }}
@@ -44,8 +44,7 @@ export function PopularAnalysesCarousel() {
                 key={item.id}
                 className="flex w-[254px] shrink-0 flex-col rounded-xl border border-border bg-card p-5 shadow-sm"
               >
-                <span className="text-xs text-muted-foreground">{item.code ?? `№ ${item.id}`}</span>
-                <p className="mt-2 min-h-0 flex-1 text-sm font-medium leading-snug text-foreground line-clamp-4">
+                <p className="min-h-0 flex-1 text-sm font-medium leading-snug text-foreground line-clamp-4">
                   {item.title}
                 </p>
                 <p className="mt-3 text-xs text-muted-foreground">{item.duration}</p>
