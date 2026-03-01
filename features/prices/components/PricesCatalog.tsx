@@ -2,12 +2,14 @@
 
 import { useMemo, useState, useCallback } from "react"
 import Link from "next/link"
+import { motion } from "framer-motion"
 import { Search, Download, ExternalLink } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 import type { Analyze, Category } from "@/features/services/types"
+import { inViewFadeUp } from "@/lib/animations"
 
 type PricesCatalogProps = {
   analyzes: Analyze[]
@@ -66,7 +68,13 @@ export function PricesCatalog({ analyzes, categories }: PricesCatalogProps) {
   }, [filtered, categoryMap])
 
   return (
-    <div className="space-y-4">
+    <motion.div
+      className="space-y-4"
+      initial={inViewFadeUp.initial}
+      whileInView={inViewFadeUp.whileInView}
+      viewport={inViewFadeUp.viewport}
+      transition={inViewFadeUp.transition}
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
           <div className="relative flex-1 sm:min-w-[220px]">
@@ -144,7 +152,7 @@ export function PricesCatalog({ analyzes, categories }: PricesCatalogProps) {
                   <td className="px-4 py-3">
                     <Link
                       href={`/analyzes/${a.slug}`}
-                      className="inline-flex items-center gap-1 text-[#00a9bf] hover:underline"
+                      className="inline-flex cursor-pointer items-center gap-1 text-[#00a9bf] hover:underline"
                     >
                       Подробнее
                       <ExternalLink className="size-3.5" aria-hidden />
@@ -162,6 +170,6 @@ export function PricesCatalog({ analyzes, categories }: PricesCatalogProps) {
         {filtered.length !== analyzes.length &&
           ` из ${analyzes.length}. Цены ориентировочные, актуальность уточняйте в лаборатории.`}
       </p>
-    </div>
+    </motion.div>
   )
 }

@@ -20,7 +20,7 @@ export default function ContactsPage() {
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-6 md:py-8">
         <nav className="mb-6 text-sm text-muted-foreground" aria-label="Хлебные крошки">
-          <Link href="/" className="hover:text-foreground">
+          <Link href="/" className="hover:text-foreground cursor-pointer">
             Главная
           </Link>
           <span className="mx-2">/</span>
@@ -72,7 +72,7 @@ export default function ContactsPage() {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white hover:border-[#00a9bf]"
+                      className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white hover:border-[#00a9bf] cursor-pointer"
                     >
                       {icon} {label}
                     </a>
@@ -87,7 +87,7 @@ export default function ContactsPage() {
                 Адрес
               </h2>
               <p className="text-muted-foreground">{CONTACT_ADDRESS}</p>
-              <Link href="/locations" className="mt-2 inline-block text-sm text-[#00a9bf] hover:underline">
+              <Link href="/locations" className="mt-2 inline-block text-sm text-[#00a9bf] hover:underline cursor-pointer">
                 Филиалы на карте →
               </Link>
             </section>

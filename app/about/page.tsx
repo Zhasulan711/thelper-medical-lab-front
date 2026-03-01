@@ -110,7 +110,7 @@ export default function AboutPage() {
                       href={p.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-lg border border-border bg-muted/30 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-[#00a9bf] hover:text-[#00a9bf]"
+                      className="rounded-lg border border-border bg-muted/30 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-[#00a9bf] hover:text-[#00a9bf] cursor-pointer"
                     >
                       {p.name}
                     </a>

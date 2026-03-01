@@ -23,7 +23,7 @@ export default function NotFound() {
             </Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/services" className="inline-flex items-center gap-2">
+            <Link href="/services" className="inline-flex cursor-pointer items-center gap-2">
               <Search className="size-4" aria-hidden />
               Каталог анализов
             </Link>

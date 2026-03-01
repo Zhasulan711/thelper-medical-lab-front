@@ -4,6 +4,7 @@ import { useState, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight, User } from "lucide-react"
 import { REVIEWS } from "@/features/home/constants"
+import { inViewFadeUp } from "@/lib/animations"
 
 export function ReviewsSection() {
   const [index, setIndex] = useState(0)
@@ -19,7 +20,13 @@ export function ReviewsSection() {
   const review = REVIEWS[index]
 
   return (
-    <section className="bg-[#00a9bf] py-16 md:py-20">
+    <motion.section
+      className="bg-[#00a9bf] py-16 md:py-20"
+      initial={inViewFadeUp.initial}
+      whileInView={inViewFadeUp.whileInView}
+      viewport={inViewFadeUp.viewport}
+      transition={inViewFadeUp.transition}
+    >
       <div className="mx-auto max-w-3xl px-4 text-center">
         <h2 className="text-2xl font-bold text-white md:text-3xl">
           Что говорят наши пациенты
@@ -54,7 +61,7 @@ export function ReviewsSection() {
           <button
             type="button"
             onClick={goPrev}
-            className="flex size-12 items-center justify-center rounded-xl bg-white/20 text-white transition-colors hover:bg-white/30"
+            className="flex size-12 cursor-pointer items-center justify-center rounded-xl bg-white/20 text-white transition-colors hover:bg-white/30"
             aria-label="Предыдущий отзыв"
           >
             <ChevronLeft className="size-6" />
@@ -62,13 +69,13 @@ export function ReviewsSection() {
           <button
             type="button"
             onClick={goNext}
-            className="flex size-12 items-center justify-center rounded-xl bg-white/20 text-white transition-colors hover:bg-white/30"
+            className="flex size-12 cursor-pointer items-center justify-center rounded-xl bg-white/20 text-white transition-colors hover:bg-white/30"
             aria-label="Следующий отзыв"
           >
             <ChevronRight className="size-6" />
           </button>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }

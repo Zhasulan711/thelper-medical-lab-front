@@ -1,5 +1,9 @@
+"use client"
+
 import Link from "next/link"
+import { motion } from "framer-motion"
 import { Phone, Mail, MapPin } from "lucide-react"
+import { inViewStaggerContainer, staggerItem } from "@/lib/animations"
 
 const FOOTER_NAV = [
   { href: "/services", label: "Анализы" },
@@ -25,10 +29,19 @@ const SOCIAL_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-muted/30">
+    <motion.footer
+      className="border-t border-border bg-muted/30"
+      initial={inViewStaggerContainer.initial}
+      whileInView={inViewStaggerContainer.whileInView}
+      viewport={inViewStaggerContainer.viewport}
+      variants={inViewStaggerContainer.variants}
+    >
       <div className="mx-auto max-w-6xl px-4 py-12 md:py-14">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          <div>
+        <motion.div
+          className="grid gap-10 md:grid-cols-2 lg:grid-cols-4"
+          variants={inViewStaggerContainer.variants}
+        >
+          <motion.div variants={staggerItem}>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
               Навигация
             </h3>
@@ -37,16 +50,16 @@ export function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
                   >
                     {label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div variants={staggerItem}>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
               Контакты
             </h3>
@@ -54,7 +67,7 @@ export function Footer() {
               <li>
                 <a
                   href="tel:+77777777777"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   <Phone className="size-4 shrink-0" />
                   +7 (777) 777-77-77
@@ -63,7 +76,7 @@ export function Footer() {
               <li>
                 <a
                   href="mailto:info@thelper.kz"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   <Mail className="size-4 shrink-0" />
                   info@thelper.kz
@@ -74,9 +87,9 @@ export function Footer() {
                 <span>г. Алматы, ул. Примерная, 1</span>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div variants={staggerItem}>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
               Мы в соцсетях
             </h3>
@@ -87,7 +100,7 @@ export function Footer() {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex size-10 items-center justify-center rounded-lg bg-muted text-sm font-medium text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white"
+                    className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-muted text-sm font-medium text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white"
                     aria-label={label}
                   >
                     {icon}
@@ -95,9 +108,9 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div variants={staggerItem}>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
               Документы
             </h3>
@@ -106,20 +119,23 @@ export function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
                   >
                     {label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div className="mt-10 border-t border-border pt-6 text-center text-sm text-muted-foreground">
+        <motion.div
+          className="mt-10 border-t border-border pt-6 text-center text-sm text-muted-foreground"
+          variants={staggerItem}
+        >
           © {new Date().getFullYear()} T-Helper. Все права защищены.
-        </div>
+        </motion.div>
       </div>
-    </footer>
+    </motion.footer>
   )
 }

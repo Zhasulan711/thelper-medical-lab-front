@@ -48,7 +48,7 @@ export function CategoryFaq({ categorySlug }: { categorySlug: string }) {
             <li key={i} className="rounded-lg border border-border overflow-hidden">
               <button
                 type="button"
-                className="flex w-full items-center justify-between gap-2 p-3 text-left text-sm font-medium text-foreground hover:bg-muted/50"
+                className="flex w-full cursor-pointer items-center justify-between gap-2 p-3 text-left text-sm font-medium text-foreground hover:bg-muted/50"
                 onClick={() => toggle(i)}
                 aria-expanded={isOpen}
               >

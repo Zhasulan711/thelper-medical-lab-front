@@ -238,7 +238,7 @@ export default async function AnalyzePage({ params }: Props) {
             <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {similar.map((item) => (
                 <li key={item.slug}>
-                  <Link href={`/analyzes/${item.slug}`} className="block h-full">
+                  <Link href={`/analyzes/${item.slug}`} className="block h-full cursor-pointer">
                     <Card className="h-full transition-colors hover:border-[#00a9bf]/50 hover:bg-muted/30">
                       <CardContent className="p-4">
                         {item.code && (

@@ -3,10 +3,12 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { AnimatePresence, motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { TestTube2, Menu, X, Phone, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { trackPhoneClick, trackCtaClick } from "@/lib/analytics"
+import { smoothTransition } from "@/lib/animations"
 
 const NAV_ITEMS = [
     { path: "/services", label: "Анализы" },
@@ -32,7 +34,7 @@ export function Header() {
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 <Link
                     href="/"
-                    className="flex items-center gap-2 shrink-0 transition-opacity hover:opacity-90"
+                    className="flex items-center gap-2 shrink-0 transition-opacity hover:opacity-90 cursor-pointer"
                     aria-label="T-Helper — на главную"
                 >
                     <span className="flex size-9 items-center justify-center rounded-lg bg-[#00a9bf]/10 text-[#00a9bf]">
@@ -54,7 +56,7 @@ export function Header() {
                                 key={path}
                                 href={path}
                                 className={cn(
-                                    "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                    "rounded-md px-3 py-2 text-sm font-medium transition-colors cursor-pointer",
                                     isActive
                                         ? "text-[#00a9bf] bg-[#00a9bf]/5"
                                         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -70,7 +72,7 @@ export function Header() {
                     <a
                         href={PHONE_HREF}
                         onClick={trackPhoneClick}
-                        className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-[#00a9bf] hover:text-[#0095a8] transition-colors whitespace-nowrap"
+                        className="hidden sm:inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium text-[#00a9bf] hover:text-[#0095a8] transition-colors whitespace-nowrap"
                     >
                         <Phone className="size-4 shrink-0" aria-hidden />
                         {PHONE}
@@ -101,13 +103,19 @@ export function Header() {
                 </div>
             </div>
 
+            <AnimatePresence>
             {isMenuOpen && (
-                <div
-                    className="lg:hidden border-t border-border bg-background"
-                    role="dialog"
-                    aria-label="Мобильное меню"
-                >
-                    <nav className="mx-auto max-w-7xl flex flex-col px-4 py-4 gap-0.5" aria-label="Меню">
+                    <motion.div
+                        key="mobile-menu"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={smoothTransition}
+                        className="lg:hidden overflow-hidden border-t border-border bg-background"
+                        role="dialog"
+                        aria-label="Мобильное меню"
+                    >
+                        <nav className="mx-auto max-w-7xl flex flex-col px-4 py-4 gap-0.5" aria-label="Меню">
                         {NAV_ITEMS.map(({ path, label }) => {
                             const isActive = pathname === path || pathname.startsWith(path)
                             return (
@@ -116,7 +124,7 @@ export function Header() {
                                     href={path}
                                     onClick={() => setIsMenuOpen(false)}
                                     className={cn(
-                                        "rounded-lg px-4 py-3 text-base font-medium transition-colors",
+                                        "rounded-lg px-4 py-3 text-base font-medium transition-colors cursor-pointer",
                                         isActive ? "bg-[#00a9bf]/10 text-[#00a9bf]" : "text-foreground hover:bg-muted"
                                     )}
                                 >
@@ -128,7 +136,7 @@ export function Header() {
                             <a
                                 href={PHONE_HREF}
                                 onClick={() => { trackPhoneClick(); setIsMenuOpen(false) }}
-                                className="flex items-center gap-2 rounded-lg px-4 py-3 text-[#00a9bf] font-medium"
+                                className="flex items-center gap-2 rounded-lg px-4 py-3 text-[#00a9bf] font-medium cursor-pointer"
                             >
                                 <Phone className="size-4" />
                                 {PHONE}
@@ -141,8 +149,9 @@ export function Header() {
                             </Button>
                         </div>
                     </nav>
-                </div>
+                </motion.div>
             )}
+            </AnimatePresence>
         </header>
     )
 }

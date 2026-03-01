@@ -4,6 +4,7 @@ import { useState } from "react"
 import Image, { type StaticImageData } from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ArrowRight } from "lucide-react"
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { INTEREST_OPTIONS } from "@/features/home/constants"
 import { ctaFormSchema, type CtaFormValues } from "@/lib/validations/cta"
 import { trackFormSubmit } from "@/lib/analytics"
+import { inViewFadeUp } from "@/lib/animations"
 
 type CtaImageSrc = string | StaticImageData
 
@@ -39,7 +41,14 @@ export function CtaFormSection({ imageSrc }: { imageSrc: CtaImageSrc }) {
   }
 
   return (
-    <section id="cta" className="bg-muted/30 px-4 py-16 md:py-20">
+    <motion.section
+      id="cta"
+      className="bg-muted/30 px-4 py-16 md:py-20"
+      initial={inViewFadeUp.initial}
+      whileInView={inViewFadeUp.whileInView}
+      viewport={inViewFadeUp.viewport}
+      transition={inViewFadeUp.transition}
+    >
       <div className="mx-auto max-w-5xl">
         <div className="overflow-hidden rounded-2xl bg-card shadow-lg md:flex">
           <div className="relative h-64 w-full shrink-0 md:h-auto md:min-h-[360px] md:w-[45%]">
@@ -156,6 +165,6 @@ export function CtaFormSection({ imageSrc }: { imageSrc: CtaImageSrc }) {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }

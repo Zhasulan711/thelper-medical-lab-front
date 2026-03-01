@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { AnimatePresence, motion } from "framer-motion"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { ImageSrc } from "@/features/home/types"
 import { FAQ_ITEMS } from "@/features/home/constants"
+import { inViewFadeUp, smoothTransition } from "@/lib/animations"
 
 export function FaqSection({ imageSrc }: { imageSrc: ImageSrc }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
@@ -15,7 +17,13 @@ export function FaqSection({ imageSrc }: { imageSrc: ImageSrc }) {
   }
 
   return (
-    <section className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-16 md:flex-row md:items-start md:gap-12">
+    <motion.section
+      className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-16 md:flex-row md:items-start md:gap-12"
+      initial={inViewFadeUp.initial}
+      whileInView={inViewFadeUp.whileInView}
+      viewport={inViewFadeUp.viewport}
+      transition={inViewFadeUp.transition}
+    >
       <div className="relative w-full shrink-0 overflow-hidden rounded-2xl md:max-w-[420px]">
         <Image
           src={typeof imageSrc === "string" ? imageSrc : imageSrc.src}
@@ -50,7 +58,7 @@ export function FaqSection({ imageSrc }: { imageSrc: ImageSrc }) {
               >
                 <button
                   type="button"
-                  className="flex w-full items-center gap-4 p-4 text-left transition-colors hover:bg-muted/50"
+                  className="flex w-full items-center gap-4 p-4 text-left transition-colors hover:bg-muted/50 cursor-pointer"
                   onClick={() => toggle(i)}
                   aria-expanded={isOpen}
                 >
@@ -78,18 +86,28 @@ export function FaqSection({ imageSrc }: { imageSrc: ImageSrc }) {
                     )}
                   </span>
                 </button>
+                <AnimatePresence>
                 {isOpen && (
-                  <div className="border-t border-border px-4 pb-4 pt-2">
-                    <p className="pl-12 text-sm text-muted-foreground md:pl-14">
-                      {item.content}
-                    </p>
-                  </div>
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={smoothTransition}
+                    className="border-t border-border overflow-hidden"
+                  >
+                    <div className="px-4 pb-4 pt-2">
+                      <p className="pl-12 text-sm text-muted-foreground md:pl-14">
+                        {item.content}
+                      </p>
+                    </div>
+                  </motion.div>
                 )}
+                </AnimatePresence>
               </div>
             )
           })}
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }

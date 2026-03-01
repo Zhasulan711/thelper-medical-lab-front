@@ -115,7 +115,7 @@ function DocumentCard({ doc }: { doc: DocumentItem }) {
         <Link
           href={href}
           {...(isFile ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white hover:border-[#00a9bf]"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-[#00a9bf] hover:text-white hover:border-[#00a9bf] cursor-pointer"
         >
           {isFile ? (
             <>

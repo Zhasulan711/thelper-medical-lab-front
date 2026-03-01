@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { MOCK_ANALYSES, VISIBLE_COUNT, CARD_WIDTH, GAP, STEP } from "@/features/home/constants"
+import { inViewFadeUp } from "@/lib/animations"
 
 export function PopularAnalysesCarousel() {
   const [index, setIndex] = useState(0)
@@ -19,7 +20,13 @@ export function PopularAnalysesCarousel() {
   }, [])
 
   return (
-    <section className="mx-auto max-w-[1100px] px-4 py-16">
+    <motion.section
+      className="mx-auto max-w-[1100px] px-4 py-16"
+      initial={inViewFadeUp.initial}
+      whileInView={inViewFadeUp.whileInView}
+      viewport={inViewFadeUp.viewport}
+      transition={inViewFadeUp.transition}
+    >
       <h2 className="mb-8 text-2xl font-bold text-foreground md:text-3xl">
         Популярные анализы
       </h2>
@@ -58,7 +65,7 @@ export function PopularAnalysesCarousel() {
           type="button"
           onClick={goPrev}
           disabled={index === 0}
-          className="absolute left-0 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background shadow-md hover:bg-muted disabled:pointer-events-none disabled:opacity-40 md:-left-4"
+          className="absolute left-0 top-1/2 z-10 flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border bg-background shadow-md hover:bg-muted disabled:pointer-events-none disabled:opacity-40 md:-left-4"
           aria-label="Предыдущие"
         >
           <ChevronLeft className="size-5 text-[#00a9bf]" />
@@ -67,12 +74,12 @@ export function PopularAnalysesCarousel() {
           type="button"
           onClick={goNext}
           disabled={index >= maxIndex}
-          className="absolute right-0 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background shadow-md hover:bg-muted disabled:pointer-events-none disabled:opacity-40 md:-right-4"
+          className="absolute right-0 top-1/2 z-10 flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border bg-background shadow-md hover:bg-muted disabled:pointer-events-none disabled:opacity-40 md:-right-4"
           aria-label="Следующие"
         >
           <ChevronRight className="size-5 text-[#00a9bf]" />
         </button>
       </div>
-    </section>
+    </motion.section>
   )
 }

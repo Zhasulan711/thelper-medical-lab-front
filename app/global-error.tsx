@@ -70,6 +70,7 @@ export default function GlobalError({
                 fontSize: "1rem",
                 color: "inherit",
                 textDecoration: "none",
+                cursor: "pointer",
               }}
             >
               На главную
