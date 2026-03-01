@@ -4,12 +4,12 @@ import { useState, useCallback } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { MOCK_ANALYSES, VISIBLE_COUNT, CARD_WIDTH, GAP, STEP } from "@/features/home/constants"
+import { POPULAR_ANALYSES, VISIBLE_COUNT, CARD_WIDTH, GAP, STEP } from "@/features/home/constants"
 import { inViewFadeUp } from "@/lib/animations"
 
 export function PopularAnalysesCarousel() {
   const [index, setIndex] = useState(0)
-  const maxIndex = Math.max(0, MOCK_ANALYSES.length - VISIBLE_COUNT)
+  const maxIndex = Math.max(0, POPULAR_ANALYSES.length - VISIBLE_COUNT)
 
   const goNext = useCallback(() => {
     setIndex((i) => (i >= maxIndex ? i : i + 1))
@@ -32,19 +32,19 @@ export function PopularAnalysesCarousel() {
       </h2>
 
       <div className="relative">
-        <div className="h-[230px] overflow-hidden">
+        <div className="h-[200px] overflow-hidden">
           <motion.div
             className="flex h-full items-stretch gap-4"
             style={{ width: "max-content" }}
             animate={{ x: -index * STEP }}
             transition={{ type: "spring", stiffness: 320, damping: 34 }}
           >
-            {MOCK_ANALYSES.map((item) => (
+            {POPULAR_ANALYSES.map((item) => (
               <div
                 key={item.id}
-                className="flex min-h-[230px] w-[254px] shrink-0 flex-col rounded-xl border border-border bg-card p-5 shadow-sm"
+                className="flex w-[254px] shrink-0 flex-col rounded-xl border border-border bg-card p-5 shadow-sm"
               >
-                <span className="text-xs text-muted-foreground">№ {item.id}</span>
+                <span className="text-xs text-muted-foreground">{item.code ?? `№ ${item.id}`}</span>
                 <p className="mt-2 min-h-0 flex-1 text-sm font-medium leading-snug text-foreground line-clamp-4">
                   {item.title}
                 </p>

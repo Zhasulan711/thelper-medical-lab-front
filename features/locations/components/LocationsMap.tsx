@@ -24,7 +24,9 @@ type LocationsMapProps = {
 export function LocationsMap({ locations, singleCenter, mapId = "locations-map-container" }: LocationsMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [error, setError] = useState<string | null>(null)
-  const [scriptLoaded, setScriptLoaded] = useState(false)
+  const [scriptLoaded, setScriptLoaded] = useState(() =>
+    typeof window !== "undefined" && !!window.DG
+  )
 
   useEffect(() => {
     if (!scriptLoaded || !window.DG || !containerRef.current || locations.length === 0) return
@@ -44,32 +46,37 @@ export function LocationsMap({ locations, singleCenter, mapId = "locations-map-c
           )
       })
 
-          if (!singleCenter && locations.length > 1 && DG.LatLngBounds) {
-          try {
-            const bounds = new DG.LatLngBounds(locations.map((l) => [l.lat, l.lng] as [number, number]))
-            map.fitBounds(bounds)
-          } catch {}
+      if (!singleCenter && locations.length > 1 && DG.LatLngBounds) {
+        try {
+          const bounds = new DG.LatLngBounds(locations.map((l) => [l.lat, l.lng] as [number, number]))
+          map.fitBounds(bounds)
+        } catch {}
       }
     }
 
-    loader.then(
-      (api) => {
-        let DG = (api && typeof (api as { map?: unknown }).map === "function" ? api : window.DG) as Window["DG"]
-        if (!DG?.map && window.DG) DG = window.DG
-        if (DG?.map) {
-          initMap(DG)
-          return
-        }
-        timeoutId = window.setTimeout(() => {
-          const late = window.DG
-          if (late?.map) initMap(late)
-          else setError("Карта 2ГИС недоступна")
-        }, 300)
-      },
-      () => setError("Не удалось загрузить карту")
-    )
+    const runInit = () => {
+      loader.then(
+        (api) => {
+          let DG = (api && typeof (api as { map?: unknown }).map === "function" ? api : window.DG) as Window["DG"]
+          if (!DG?.map && window.DG) DG = window.DG
+          if (DG?.map) {
+            initMap(DG)
+            return
+          }
+          timeoutId = window.setTimeout(() => {
+            const late = window.DG
+            if (late?.map) initMap(late)
+            else setError("Карта 2ГИС недоступна")
+          }, 300)
+        },
+        () => setError("Не удалось загрузить карту")
+      )
+    }
+
+    const rafId = requestAnimationFrame(runInit)
 
     return () => {
+      cancelAnimationFrame(rafId)
       if (timeoutId) clearTimeout(timeoutId)
     }
   }, [scriptLoaded, locations, singleCenter, mapId])

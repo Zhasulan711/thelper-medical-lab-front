@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import {
   getCategoryBySlug,
   getAnalyzesByCategory,
+  getAnalyzesGroupedBySubcategory,
 } from "@/features/services/constants"
 import { CategoryFaq } from "@/features/services/components/CategoryFaq"
 
@@ -37,12 +38,13 @@ export default async function CategoryPage({ params }: Props) {
   if (!category) notFound()
 
   const analyzes = getAnalyzesByCategory(slug)
+  const grouped = getAnalyzesGroupedBySubcategory(slug)
+  const hasSubcategories = grouped.length > 0
   const preparation = PREPARATION_BY_SLUG[slug]
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-6 md:py-8">
-        <nav className="mb-6 text-sm text-muted-foreground" aria-label="Хлебные крошки">
+      <nav className="mb-6 text-sm text-muted-foreground" aria-label="Хлебные крошки">
           <Link href="/" className="hover:text-foreground">Главная</Link>
           <span className="mx-2">/</span>
           <Link href="/services" className="hover:text-foreground">Анализы</Link>
@@ -69,49 +71,78 @@ export default async function CategoryPage({ params }: Props) {
 
         <section className="mb-12">
           <h2 className="mb-4 text-lg font-semibold text-foreground">
-            Анализы в категории ({analyzes.length})
+            {hasSubcategories ? "Подкатегории" : `Анализы в категории (${analyzes.length})`}
           </h2>
-          <ul className="flex flex-col gap-4">
-            {analyzes.map((item) => (
-              <li
-                key={item.slug}
-                className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="min-w-0 flex-1">
-                  {item.code && (
-                    <span className="text-xs text-muted-foreground">{item.code}</span>
-                  )}
-                  <h3 className="font-semibold text-foreground">{item.name}</h3>
-                  {item.shortDescription && (
-                    <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                      {item.shortDescription}
-                    </p>
-                  )}
-                  <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Clock className="size-3.5" />
-                      {item.duration}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Droplet className="size-3.5" />
-                      {item.material}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex shrink-0 items-center gap-4 sm:flex-row">
-                  <span className="text-lg font-bold text-foreground">
-                    от {item.priceFrom} ₸
-                  </span>
-                  <Button asChild variant="outline" size="sm" className="gap-1">
-                    <Link href={`/analyzes/${item.slug}`}>
-                      Подробнее
-                      <ArrowRight className="size-3.5" />
+
+          {hasSubcategories ? (
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {grouped.map(({ subcategory, groups }) => {
+                const count = groups.reduce((acc, g) => acc + g.analyzes.length, 0)
+                return (
+                  <li key={subcategory.slug}>
+                    <Link
+                      href={`/services/${slug}/${subcategory.slug}`}
+                      className="flex flex-col gap-2 rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-[#00a9bf]/50 hover:bg-muted/30"
+                    >
+                      <span className="font-semibold text-foreground">{subcategory.name}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {count} {count === 1 ? "анализ" : count < 5 ? "анализа" : "анализов"}
+                      </span>
+                      <span className="mt-1 inline-flex items-center gap-1 text-sm text-[#00a9bf]">
+                        Перейти
+                        <ArrowRight className="size-4" aria-hidden />
+                      </span>
                     </Link>
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                  </li>
+                )
+              })}
+            </ul>
+          ) : (
+            <>
+            <ul className="flex flex-col gap-4">
+              {analyzes.map((item) => (
+                <li
+                  key={item.slug}
+                  className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0 flex-1">
+                    {item.code && (
+                      <span className="text-xs text-muted-foreground">{item.code}</span>
+                    )}
+                    <h3 className="font-semibold text-foreground">{item.name}</h3>
+                    {item.shortDescription && (
+                      <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+                        {item.shortDescription}
+                      </p>
+                    )}
+                    <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Clock className="size-3.5" />
+                        {item.duration}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Droplet className="size-3.5" />
+                        {item.material}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-4 sm:flex-row">
+                    <span className="text-lg font-bold text-foreground">
+                      от {item.priceFrom} ₸
+                    </span>
+                    <Button asChild variant="outline" size="sm" className="gap-1">
+                      <Link href={`/analyzes/${item.slug}`}>
+                        Подробнее
+                        <ArrowRight className="size-3.5" />
+                      </Link>
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+          )}
+
           {analyzes.length === 0 && (
             <p className="rounded-xl border border-border bg-muted/30 p-6 text-center text-muted-foreground">
               В этой категории пока нет анализов.
@@ -120,7 +151,6 @@ export default async function CategoryPage({ params }: Props) {
         </section>
 
         <CategoryFaq categorySlug={slug} />
-      </div>
     </main>
   )
 }

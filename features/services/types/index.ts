@@ -6,10 +6,18 @@ export type Category = {
   isCheckup?: boolean
 }
 
+export type Subcategory = {
+  slug: string
+  name: string
+  categorySlug: string
+}
+
 export type Analyze = {
   slug: string
   name: string
   categorySlug: string
+  subcategorySlug?: string
+  groupKey?: string
   priceFrom: number
   duration: string
   material: string

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next"
-import { CATEGORIES, ANALYZES } from "@/features/services/constants"
+import { CATEGORIES, SUBCATEGORIES, ANALYZES } from "@/features/services/constants"
 import { LOCATIONS } from "@/features/locations/constants"
 import { BLOG_POSTS } from "@/features/blog/constants"
 import { PROMOTIONS } from "@/features/promotions/constants"
@@ -27,6 +27,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.85,
+  }))
+
+  const subcategories = SUBCATEGORIES.map((s) => ({
+    url: `${baseUrl}/services/${s.categorySlug}/${s.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.82,
   }))
 
   const analyzes = ANALYZES.map((a) => ({
@@ -67,6 +74,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticPages,
     ...categories,
+    ...subcategories,
     ...analyzes,
     ...locations,
     ...blog,

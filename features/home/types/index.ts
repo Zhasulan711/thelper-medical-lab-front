@@ -18,4 +18,6 @@ export type PopularAnalysisCard = {
   title: string
   price: string
   duration: string
+  /** Код для отображения (например "№ 10"), если нет — показывается id */
+  code?: string
 }

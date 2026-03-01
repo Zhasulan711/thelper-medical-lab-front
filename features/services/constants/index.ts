@@ -1,103 +1,172 @@
-import type { Category, Analyze, AnalyzeDetail } from "@/features/services/types"
+import type { Category, Subcategory, Analyze, AnalyzeDetail } from "@/features/services/types"
 
 const CATEGORY_BASE: Omit<Category, "analysisCount">[] = [
-  { slug: "biokhimija", name: "Биохимические исследования", description: "Исследования биохимических показателей крови и других биоматериалов.", isCheckup: false },
-  { slug: "gormony", name: "Гормональные исследования", description: "Анализы на гормоны щитовидной железы, половые гормоны и др.", isCheckup: false },
-  { slug: "gematologija", name: "Гематологические исследования", description: "Общий анализ крови, коагулограмма и другие гематологические тесты.", isCheckup: false },
-  { slug: "immunologija", name: "Иммунологические исследования", description: "Оценка иммунного статуса, маркеры инфекций.", isCheckup: false },
-  { slug: "allergologija", name: "Аллергологические исследования", description: "Определение аллергенов и специфических IgE.", isCheckup: false },
-  { slug: "infekcii", name: "Инфекции (ПЦР, ИФА)", description: "ПЦР и ИФА-диагностика инфекций.", isCheckup: false },
-  { slug: "onkomarkery", name: "Онкомаркёры", description: "Маркеры опухолевых заболеваний.", isCheckup: false },
-  { slug: "check-up", name: "Чек-апы (комплексы)", description: "Готовые комплексы анализов для профилактического обследования.", isCheckup: true },
+  { slug: "biokhimija", name: "Биохимия крови", description: "Глюкоза, АЛТ/АСТ, креатинин, холестерин, гликированный гемоглобин, C-реактивный белок.", isCheckup: false },
+  { slug: "gormony", name: "Гормоны", description: "Репродуктивные гормоны, щитовидная железа.", isCheckup: false },
+  { slug: "gematologija", name: "Общие анализы", description: "ОАК, ОАМ, коагулограмма, группа крови.", isCheckup: false },
+  { slug: "immunologija", name: "Иммунологические исследования", description: "Иммунограмма и оценка иммунного статуса.", isCheckup: false },
+  { slug: "infekcii", name: "Инфекции и ИППП", description: "Хламидии, вирусные инфекции, гепатиты, паразиты.", isCheckup: false },
+  { slug: "onkomarkery", name: "Онкомаркёры", description: "ПСА, СА-125, АФП, РЭА, СА 72-4, NSE, ферритин.", isCheckup: false },
+  { slug: "dopolnitelno", name: "Дополнительно", description: "Забор крови и др.", isCheckup: false },
 ]
 
+/** Подкатегории по прайсу (Инфекции — Хламидии, Вирусные и т.д.; Гормоны — Репродуктивные, Щитовидная железа) */
+export const SUBCATEGORIES: Subcategory[] = [
+  { slug: "hlamidii", name: "Хламидии", categorySlug: "infekcii" },
+  { slug: "drugie-urogenitalnye", name: "Другие урогенитальные инфекции", categorySlug: "infekcii" },
+  { slug: "virusnye-infekcii", name: "Вирусные инфекции", categorySlug: "infekcii" },
+  { slug: "virusnye-gepatity", name: "Вирусные гепатиты", categorySlug: "infekcii" },
+  { slug: "parazitarnye", name: "Паразитарные инфекции", categorySlug: "infekcii" },
+  { slug: "reproduktivnye", name: "Репродуктивные гормоны", categorySlug: "gormony" },
+  { slug: "shhitovidnaja", name: "Щитовидная железа", categorySlug: "gormony" },
+]
+
+/** Названия групп внутри подкатегории для отображения заголовка блока */
+export const SUBGROUP_DISPLAY_NAMES: Record<string, Record<string, string>> = {
+  hlamidii: {
+    "chlamydia-trachomatis": "Chlamydia trachomatis",
+    "chlamydia-pneumoniae": "Chlamydia pneumoniae",
+    "chlamydia-psittaci": "Chlamydia psittaci",
+  },
+  "drugie-urogenitalnye": {
+    "trihomonada-gardnerella-mikoplazma": "Трихомонада, Гарднерелла, Микоплазма hominis",
+    "mikoplazma-pneumoniae": "Микоплазма pneumoniae",
+    ureaplasma: "Уреаплазма",
+    gonoreya: "Гонорея",
+  },
+  "virusnye-infekcii": {
+    cmv: "Цитомегаловирус (CMV)",
+    "vpg-1-2": "ВПГ 1/2 (Герпес)",
+    veb: "Вирус Эпштейна-Барр (ВЭБ)",
+    "varicella-zoster": "Варицелла-Зостер",
+    "covid-19": "COVID-19",
+  },
+  "virusnye-gepatity": {
+    "gepatit-a": "Гепатит A",
+    "gepatit-b": "Гепатит B",
+    "gepatit-c": "Гепатит C",
+    "gepatit-d-e": "Гепатит D / E",
+  },
+  parazitarnye: {
+    parazity: "Паразиты (Токсоплазма, Лямблии, Аскарида, Эхинококк, Описторхи, Токсокара и др.)",
+  },
+  reproduktivnye: {
+    "lh-fsg-prolaktin-testosteron": "ЛГ / ФСГ / Пролактин / Тестостерон",
+    estradiol: "Эстрадиол",
+    amg: "АМГ",
+  },
+  shhitovidnaja: {
+    ttg: "ТТГ",
+    "t3-t4": "Т3 / Т4",
+    "antitela-shhitovidnoj": "Антитела к щитовидной железе",
+    trab: "TRAb",
+  },
+}
+
+const DURATION_1 = "1 календарный день"
+const DURATION_1_2 = "1–2 дня"
+const MATERIAL_BLOOD = "Кровь венозная"
+const MATERIAL_URINE = "Моча"
+
 export const ANALYZES: Analyze[] = [
-  // Биохимические (12)
-  { slug: "glukoza-krov", name: "Глюкоза (в крови)", categorySlug: "biokhimija", priceFrom: 170, duration: "1 календарный день", material: "Кровь венозная", code: "№ 16", shortDescription: "Основной лабораторный тест для оценки углеводного обмена." },
-  { slug: "glikirovannyj-gemoglobin", name: "Гликированный гемоглобин (HbA1c)", categorySlug: "biokhimija", priceFrom: 500, duration: "1 календарный день", material: "Кровь венозная", code: "№ 18", shortDescription: "Оценка среднего уровня глюкозы за 2–3 месяца." },
-  { slug: "fruktozamin", name: "Фруктозамин", categorySlug: "biokhimija", priceFrom: 690, duration: "до 4 рабочих дней", material: "Кровь венозная", code: "№ 17", shortDescription: "Контроль компенсации сахарного диабета." },
-  { slug: "kreatinin", name: "Креатинин", categorySlug: "biokhimija", priceFrom: 280, duration: "1 календарный день", material: "Кровь венозная", code: "№ 19", shortDescription: "Оценка функции почек." },
-  { slug: "mochevina", name: "Мочевина", categorySlug: "biokhimija", priceFrom: 260, duration: "1 календарный день", material: "Кровь венозная", code: "№ 20", shortDescription: "Маркер белкового обмена и функции почек." },
-  { slug: "alt", name: "АЛТ (аланинаминотрансфераза)", categorySlug: "biokhimija", priceFrom: 320, duration: "1 календарный день", material: "Кровь венозная", code: "№ 21", shortDescription: "Фермент печени, маркер повреждения гепатоцитов." },
-  { slug: "ast", name: "АСТ (аспартатаминотрансфераза)", categorySlug: "biokhimija", priceFrom: 320, duration: "1 календарный день", material: "Кровь венозная", code: "№ 22", shortDescription: "Фермент печени и сердца." },
-  { slug: "obshhij-bilirubin", name: "Билирубин общий", categorySlug: "biokhimija", priceFrom: 290, duration: "1 календарный день", material: "Кровь венозная", code: "№ 23", shortDescription: "Оценка функции печени и желчевыводящих путей." },
-  { slug: "holesterin-obshhij", name: "Холестерин общий", categorySlug: "biokhimija", priceFrom: 310, duration: "1 календарный день", material: "Кровь венозная", code: "№ 24", shortDescription: "Скрининг липидного обмена." },
-  { slug: "ldl-holesterin", name: "Холестерин ЛПНП", categorySlug: "biokhimija", priceFrom: 380, duration: "1 календарный день", material: "Кровь венозная", code: "№ 25", shortDescription: "«Плохой» холестерин, фактор риска атеросклероза." },
-  { slug: "hdl-holesterin", name: "Холестерин ЛПВП", categorySlug: "biokhimija", priceFrom: 380, duration: "1 календарный день", material: "Кровь венозная", code: "№ 26", shortDescription: "«Хороший» холестерин." },
-  { slug: "trigliceridy", name: "Триглицериды", categorySlug: "biokhimija", priceFrom: 350, duration: "1 календарный день", material: "Кровь венозная", code: "№ 27", shortDescription: "Липиды крови, фактор риска сердечно-сосудистых заболеваний." },
-  // Гематологические (15)
-  { slug: "obshhij-analiz-krovi", name: "Общий анализ крови (без лейкоформулы и СОЭ)", categorySlug: "gematologija", priceFrom: 220, duration: "1 календарный день", material: "Кровь венозная", code: "№ 5", shortDescription: "Базовый скрининг состояния крови." },
-  { slug: "oak-s-lejkoformuloj", name: "ОАК с лейкоформулой и СОЭ", categorySlug: "gematologija", priceFrom: 450, duration: "1 календарный день", material: "Кровь венозная", code: "№ 6", shortDescription: "Развёрнутый общий анализ крови." },
-  { slug: "retikulocity", name: "Ретикулоциты", categorySlug: "gematologija", priceFrom: 520, duration: "1 календарный день", material: "Кровь венозная", code: "№ 7", shortDescription: "Оценка кроветворной функции костного мозга." },
-  { slug: "koagulogramma", name: "Коагулограмма (базовая)", categorySlug: "gematologija", priceFrom: 890, duration: "1 календарный день", material: "Кровь венозная", code: "№ 8", shortDescription: "ПТВ, МНО, АЧТВ, фибриноген." },
-  { slug: "d-dimery", name: "D-димеры", categorySlug: "gematologija", priceFrom: 1200, duration: "1 календарный день", material: "Кровь венозная", code: "№ 9", shortDescription: "Маркер тромбообразования." },
-  { slug: "ferritin", name: "Ферритин", categorySlug: "gematologija", priceFrom: 850, duration: "1–2 дня", material: "Кровь венозная", code: "№ 10", shortDescription: "Запасы железа в организме." },
-  { slug: "obshhij-zhelezosvyazyvayushhij", name: "ОЖСС (общая железосвязывающая способность)", categorySlug: "gematologija", priceFrom: 420, duration: "1 календарный день", material: "Кровь венозная", code: "№ 11", shortDescription: "Оценка обмена железа." },
-  { slug: "transferrin", name: "Трансферрин", categorySlug: "gematologija", priceFrom: 680, duration: "1 календарный день", material: "Кровь венозная", code: "№ 12", shortDescription: "Белок, переносящий железо." },
-  { slug: "vitamin-b12", name: "Витамин B12", categorySlug: "gematologija", priceFrom: 950, duration: "3–5 дней", material: "Кровь венозная", code: "№ 13", shortDescription: "Диагностика B12-дефицитной анемии." },
-  { slug: "folievaya-kislota", name: "Фолиевая кислота", categorySlug: "gematologija", priceFrom: 720, duration: "1–2 дня", material: "Кровь венозная", code: "№ 14", shortDescription: "Оценка обеспеченности фолатами." },
-  { slug: "gruppa-krovi-rezus", name: "Группа крови и резус-фактор", categorySlug: "gematologija", priceFrom: 580, duration: "1 календарный день", material: "Кровь венозная", code: "№ 15", shortDescription: "Определение группы крови по системе AB0 и резус." },
-  { slug: "eritrocity-sedimentacija", name: "СОЭ (скорость оседания эритроцитов)", categorySlug: "gematologija", priceFrom: 180, duration: "1 календарный день", material: "Кровь венозная", code: "№ 16", shortDescription: "Неспецифический маркер воспаления." },
-  { slug: "trombocity", name: "Тромбоциты (подсчёт)", categorySlug: "gematologija", priceFrom: 350, duration: "1 календарный день", material: "Кровь венозная", code: "№ 17", shortDescription: "Оценка свёртывающей системы." },
-  { slug: "prothrombin-vremya", name: "Протромбиновое время (ПТВ, МНО)", categorySlug: "gematologija", priceFrom: 420, duration: "1 календарный день", material: "Кровь венозная", code: "№ 18", shortDescription: "Контроль при приёме антикоагулянтов." },
-  { slug: "apttv", name: "АЧТВ (активированное частичное тромбопластиновое время)", categorySlug: "gematologija", priceFrom: 380, duration: "1 календарный день", material: "Кровь венозная", code: "№ 19", shortDescription: "Оценка внутреннего пути свёртывания." },
-  // Гормональные (8)
-  { slug: "ttg", name: "ТТГ (тиреотропный гормон)", categorySlug: "gormony", priceFrom: 350, duration: "1 календарный день", material: "Кровь венозная", code: "№ 20", shortDescription: "Скрининг функции щитовидной железы." },
-  { slug: "vitamin-d", name: "25-OH витамин D", categorySlug: "gormony", priceFrom: 670, duration: "1 календарный день", material: "Кровь венозная", code: "№ 25", shortDescription: "Оценка обеспеченности витамином D." },
-  { slug: "t3-svobodnyj", name: "Т3 свободный", categorySlug: "gormony", priceFrom: 520, duration: "1 календарный день", material: "Кровь венозная", code: "№ 26", shortDescription: "Гормон щитовидной железы." },
-  { slug: "t4-svobodnyj", name: "Т4 свободный", categorySlug: "gormony", priceFrom: 520, duration: "1 календарный день", material: "Кровь венозная", code: "№ 27", shortDescription: "Гормон щитовидной железы." },
-  { slug: "kortizol", name: "Кортизол", categorySlug: "gormony", priceFrom: 680, duration: "1–2 дня", material: "Кровь венозная", code: "№ 28", shortDescription: "Гормон надпочечников, стрессовый гормон." },
-  { slug: "insulin", name: "Инсулин", categorySlug: "gormony", priceFrom: 720, duration: "1 календарный день", material: "Кровь венозная", code: "№ 29", shortDescription: "Оценка углеводного обмена и инсулинорезистентности." },
-  { slug: "prolaktin", name: "Пролактин", categorySlug: "gormony", priceFrom: 580, duration: "1 календарный день", material: "Кровь венозная", code: "№ 30", shortDescription: "Гормон гипофиза." },
-  { slug: "fsg", name: "ФСГ (фолликулостимулирующий гормон)", categorySlug: "gormony", priceFrom: 620, duration: "1 календарный день", material: "Кровь венозная", code: "№ 31", shortDescription: "Оценка репродуктивной функции." },
-  // Иммунологические (6)
-  { slug: "iga", name: "Иммуноглобулин A (IgA)", categorySlug: "immunologija", priceFrom: 650, duration: "1–2 дня", material: "Кровь венозная", code: "№ 32", shortDescription: "Антитела слизистых оболочек." },
-  { slug: "igm", name: "Иммуноглобулин M (IgM)", categorySlug: "immunologija", priceFrom: 650, duration: "1–2 дня", material: "Кровь венозная", code: "№ 33", shortDescription: "Маркер острой фазы инфекции." },
-  { slug: "igg", name: "Иммуноглобулин G (IgG)", categorySlug: "immunologija", priceFrom: 650, duration: "1–2 дня", material: "Кровь венозная", code: "№ 34", shortDescription: "Основной класс антител в крови." },
-  { slug: "ige-obshhij", name: "Иммуноглобулин E общий", categorySlug: "immunologija", priceFrom: 580, duration: "1 календарный день", material: "Кровь венозная", code: "№ 35", shortDescription: "Маркер аллергических реакций." },
-  { slug: "c-reaktivnyj-belok", name: "С-реактивный белок (СРБ)", categorySlug: "immunologija", priceFrom: 420, duration: "1 календарный день", material: "Кровь венозная", code: "№ 36", shortDescription: "Маркер воспаления." },
-  { slug: "aslo", name: "АСЛ-О (антистрептолизин-О)", categorySlug: "immunologija", priceFrom: 480, duration: "1 календарный день", material: "Кровь венозная", code: "№ 37", shortDescription: "Маркер перенесённой стрептококковой инфекции." },
-  // Аллергологические (5)
-  { slug: "panel-pishhevye-allergeny", name: "Панель пищевые аллергены (IgE)", categorySlug: "allergologija", priceFrom: 4500, duration: "5–7 дней", material: "Кровь венозная", code: "№ 40", shortDescription: "Скрининг пищевой аллергии." },
-  { slug: "panel-bytovye-allergeny", name: "Панель бытовые аллергены (IgE)", categorySlug: "allergologija", priceFrom: 3800, duration: "5–7 дней", material: "Кровь венозная", code: "№ 41", shortDescription: "Пыль, клещи, шерсть животных." },
-  { slug: "panel-pylevye-allergeny", name: "Панель пыльцевые аллергены (IgE)", categorySlug: "allergologija", priceFrom: 4200, duration: "5–7 дней", material: "Кровь венозная", code: "№ 42", shortDescription: "Пыльца деревьев и трав." },
-  { slug: "allergen-otdelnyj", name: "Определение специфического IgE (1 аллерген)", categorySlug: "allergologija", priceFrom: 650, duration: "3–5 дней", material: "Кровь венозная", code: "№ 43", shortDescription: "Количественное определение IgE к одному аллергену." },
-  { slug: "eozinofilnyj-belok", name: "Эозинофильный катионный белок", categorySlug: "allergologija", priceFrom: 1200, duration: "3–5 дней", material: "Кровь венозная", code: "№ 44", shortDescription: "Маркер аллергического воспаления." },
-  // Инфекции ПЦР, ИФА (20)
-  { slug: "hbs-ag", name: "HBsAg (гепатит B, поверхностный антиген)", categorySlug: "infekcii", priceFrom: 580, duration: "1 календарный день", material: "Кровь венозная", code: "№ 50", shortDescription: "Скрининг гепатита B." },
-  { slug: "anti-hcv", name: "Anti-HCV (антитела к гепатиту C)", categorySlug: "infekcii", priceFrom: 620, duration: "1 календарный день", material: "Кровь венозная", code: "№ 51", shortDescription: "Скрининг гепатита C." },
-  { slug: "hiv-1-2", name: "ВИЧ 1 и 2 (антиген + антитела)", categorySlug: "infekcii", priceFrom: 450, duration: "1 календарный день", material: "Кровь венозная", code: "№ 52", shortDescription: "Скрининг ВИЧ-инфекции." },
-  { slug: "sifilis-rpr", name: "Сифилис (RPR, антикардиолипиновый тест)", categorySlug: "infekcii", priceFrom: 420, duration: "1 календарный день", material: "Кровь венозная", code: "№ 53", shortDescription: "Скрининг сифилиса." },
-  { slug: "pcr-covid-19", name: "ПЦР SARS-CoV-2 (COVID-19)", categorySlug: "infekcii", priceFrom: 2500, duration: "1–2 дня", material: "Мазок из ротоглотки", code: "№ 54", shortDescription: "Выявление РНК вируса." },
-  { slug: "igg-covid-19", name: "IgG к SARS-CoV-2 (COVID-19)", categorySlug: "infekcii", priceFrom: 1200, duration: "1–2 дня", material: "Кровь венозная", code: "№ 55", shortDescription: "Антитела после перенесённой инфекции или вакцинации." },
-  { slug: "pcr-ureaplasma", name: "ПЦР Ureaplasma species", categorySlug: "infekcii", priceFrom: 450, duration: "1–2 дня", material: "Соскоб/мазок", code: "№ 56", shortDescription: "Выявление ДНК уреаплазм." },
-  { slug: "pcr-mikoplazma", name: "ПЦР Mycoplasma genitalium", categorySlug: "infekcii", priceFrom: 450, duration: "1–2 дня", material: "Соскоб/мазок", code: "№ 57", shortDescription: "Выявление ДНК микоплазмы." },
-  { slug: "pcr-hlamidia", name: "ПЦР Chlamydia trachomatis", categorySlug: "infekcii", priceFrom: 450, duration: "1–2 дня", material: "Соскоб/мазок", code: "№ 58", shortDescription: "Выявление ДНК хламидий." },
-  { slug: "pcr-gardnerella", name: "ПЦР Gardnerella vaginalis", categorySlug: "infekcii", priceFrom: 450, duration: "1–2 дня", material: "Соскоб/мазок", code: "№ 59", shortDescription: "Бактериальный вагиноз." },
-  { slug: "pcr-gerpes-1-2", name: "ПЦР HSV 1/2 (герпес)", categorySlug: "infekcii", priceFrom: 450, duration: "1–2 дня", material: "Соскоб/кровь", code: "№ 60", shortDescription: "Выявление ДНК вируса простого герпеса." },
-  { slug: "pcr-cmv", name: "ПЦР ЦМВ (цитомегаловирус)", categorySlug: "infekcii", priceFrom: 550, duration: "1–2 дня", material: "Кровь венозная/моча", code: "№ 61", shortDescription: "Выявление ДНК цитомегаловируса." },
-  { slug: "pcr-ebv", name: "ПЦР ВЭБ (вирус Эпштейна–Барр)", categorySlug: "infekcii", priceFrom: 550, duration: "1–2 дня", material: "Кровь венозная", code: "№ 62", shortDescription: "Выявление ДНК вируса." },
-  { slug: "pcr-toksoplazma", name: "ПЦР Toxoplasma gondii", categorySlug: "infekcii", priceFrom: 650, duration: "2–3 дня", material: "Кровь венозная", code: "№ 63", shortDescription: "Токсоплазмоз." },
-  { slug: "ifa-toksoplazma-igg-igm", name: "ИФА Toxoplasma gondii (IgG, IgM)", categorySlug: "infekcii", priceFrom: 850, duration: "1–2 дня", material: "Кровь венозная", code: "№ 64", shortDescription: "Антитела к токсоплазме." },
-  { slug: "ifa-cmv-igg-igm", name: "ИФА ЦМВ (IgG, IgM)", categorySlug: "infekcii", priceFrom: 850, duration: "1–2 дня", material: "Кровь венозная", code: "№ 65", shortDescription: "Антитела к цитомегаловирусу." },
-  { slug: "ifa-hlamidia-iga-igg", name: "ИФА Chlamydia trachomatis (IgA, IgG)", categorySlug: "infekcii", priceFrom: 720, duration: "1–2 дня", material: "Кровь венозная", code: "№ 66", shortDescription: "Антитела к хламидиям." },
-  { slug: "ifa-gerpes-1-2-igg-igm", name: "ИФА HSV 1/2 (IgG, IgM)", categorySlug: "infekcii", priceFrom: 950, duration: "1–2 дня", material: "Кровь венозная", code: "№ 67", shortDescription: "Антитела к вирусу герпеса." },
-  { slug: "ifa-lamblia", name: "ИФА Giardia lamblia (лямблии)", categorySlug: "infekcii", priceFrom: 680, duration: "1–2 дня", material: "Кровь венозная", code: "№ 68", shortDescription: "Антитела к лямблиям." },
-  { slug: "ifa-opistorhoz", name: "ИФА Opisthorchis (описторхоз)", categorySlug: "infekcii", priceFrom: 620, duration: "1–2 дня", material: "Кровь венозная", code: "№ 69", shortDescription: "Антитела к описторхам." },
-  // Онкомаркёры (7)
-  { slug: "psa-obshhij", name: "ПСА общий", categorySlug: "onkomarkery", priceFrom: 950, duration: "1 календарный день", material: "Кровь венозная", code: "№ 70", shortDescription: "Скрининг рака предстательной железы." },
-  { slug: "psa-svobodnyj", name: "ПСА свободный", categorySlug: "onkomarkery", priceFrom: 950, duration: "1 календарный день", material: "Кровь венозная", code: "№ 71", shortDescription: "Уточнение при повышении общего ПСА." },
-  { slug: "afp", name: "АФП (альфа-фетопротеин)", categorySlug: "onkomarkery", priceFrom: 720, duration: "1–2 дня", material: "Кровь венозная", code: "№ 72", shortDescription: "Маркер печени и герминогенных опухолей." },
-  { slug: "rea", name: "РЭА (раково-эмбриональный антиген)", categorySlug: "onkomarkery", priceFrom: 780, duration: "1–2 дня", material: "Кровь венозная", code: "№ 73", shortDescription: "Маркер колоректального рака и др." },
-  { slug: "ca-125", name: "CA 125", categorySlug: "onkomarkery", priceFrom: 850, duration: "1–2 дня", material: "Кровь венозная", code: "№ 74", shortDescription: "Маркер рака яичников." },
-  { slug: "ca-19-9", name: "CA 19-9", categorySlug: "onkomarkery", priceFrom: 850, duration: "1–2 дня", material: "Кровь венозная", code: "№ 75", shortDescription: "Маркер рака поджелудочной железы и ЖКТ." },
-  { slug: "he4", name: "HE4 (белок 4 эпидидимиса человека)", categorySlug: "onkomarkery", priceFrom: 1650, duration: "3–5 дней", material: "Кровь венозная", code: "№ 76", shortDescription: "Маркер рака яичников." },
-  // Чек-апы (5)
-  { slug: "check-up-bazovyj", name: "Чек-ап базовый", categorySlug: "check-up", priceFrom: 12000, duration: "1–2 дня", material: "Кровь венозная", shortDescription: "Комплекс: ОАК, биохимия, глюкоза, ТТГ, липидограмма." },
-  { slug: "check-up-rasshirennyj", name: "Чек-ап расширенный", categorySlug: "check-up", priceFrom: 25000, duration: "2–3 дня", material: "Кровь венозная, моча", shortDescription: "Расширенное профилактическое обследование." },
-  { slug: "check-up-zhenskij", name: "Чек-ап женский", categorySlug: "check-up", priceFrom: 18500, duration: "2–3 дня", material: "Кровь венозная", shortDescription: "Гормоны, липиды, ОАК, биохимия, онкомаркёры." },
-  { slug: "check-up-muzhskoj", name: "Чек-ап мужской", categorySlug: "check-up", priceFrom: 17500, duration: "2–3 дня", material: "Кровь венозная", shortDescription: "ПСА, липиды, ОАК, биохимия, глюкоза." },
-  { slug: "check-up-sport", name: "Чек-ап для спортсменов", categorySlug: "check-up", priceFrom: 22000, duration: "2–3 дня", material: "Кровь венозная", shortDescription: "Биохимия, гормоны, маркеры мышц и сердца." },
+  // 🔬 Инфекции и ИППП — Хламидии
+  { slug: "chlamydia-trachomatis-igg", name: "Chlamydia trachomatis IgG", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-trachomatis", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-trachomatis-iga", name: "Chlamydia trachomatis IgA", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-trachomatis", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-trachomatis-igm", name: "Chlamydia trachomatis IgM", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-trachomatis", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-trachomatis-avidnost", name: "Chlamydia trachomatis Авидность", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-trachomatis", priceFrom: 3600, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-trachomatis-cik", name: "Chlamydia trachomatis ЦИК", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-trachomatis", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-trachomatis-sp-ige", name: "Chlamydia trachomatis Sp.IgE", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-trachomatis", priceFrom: 2000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-trachomatis-affinnost", name: "Chlamydia trachomatis Аффинность", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-trachomatis", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // Chlamydia pneumoniae
+  { slug: "chlamydia-pneumoniae-igg-iga-igm", name: "Chlamydia pneumoniae IgG / IgA / IgM", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-pneumoniae", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-pneumoniae-avidnost", name: "Chlamydia pneumoniae Авидность", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-pneumoniae", priceFrom: 3600, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-pneumoniae-cik", name: "Chlamydia pneumoniae ЦИК", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-pneumoniae", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // Chlamydia psittaci
+  { slug: "chlamydia-psittaci-igg", name: "Chlamydia psittaci IgG", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-psittaci", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-psittaci-avidnost", name: "Chlamydia psittaci Авидность", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-psittaci", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "chlamydia-psittaci-cik", name: "Chlamydia psittaci ЦИК", categorySlug: "infekcii", subcategorySlug: "hlamidii", groupKey: "chlamydia-psittaci", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // Другие урогенитальные — Трихомонада, Гарднерелла, Микоплазма hominis
+  { slug: "trihomonada-gardnerella-mikoplazma-igg-iga-igm", name: "Трихомонада, Гарднерелла, Микоплазма hominis IgG / IgA / IgM", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "trihomonada-gardnerella-mikoplazma", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "trihomonada-gardnerella-mikoplazma-avidnost", name: "Трихомонада, Гарднерелла, Микоплазма hominis Авидность", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "trihomonada-gardnerella-mikoplazma", priceFrom: 3600, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "trihomonada-gardnerella-mikoplazma-cik", name: "Трихомонада, Гарднерелла, Микоплазма hominis ЦИК", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "trihomonada-gardnerella-mikoplazma", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "trihomonada-gardnerella-mikoplazma-sp-ige", name: "Трихомонада, Гарднерелла, Микоплазма hominis Sp.IgE", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "trihomonada-gardnerella-mikoplazma", priceFrom: 2000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "trihomonada-gardnerella-mikoplazma-affinnost", name: "Трихомонада, Гарднерелла, Микоплазма hominis Аффинность", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "trihomonada-gardnerella-mikoplazma", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // Микоплазма pneumoniae
+  { slug: "mikoplazma-pneumoniae-igg-iga-igm", name: "Микоплазма pneumoniae IgG / IgA / IgM", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "mikoplazma-pneumoniae", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "mikoplazma-pneumoniae-avidnost", name: "Микоплазма pneumoniae Авидность", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "mikoplazma-pneumoniae", priceFrom: 2800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "mikoplazma-pneumoniae-cik", name: "Микоплазма pneumoniae ЦИК", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "mikoplazma-pneumoniae", priceFrom: 3200, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // Уреаплазма
+  { slug: "ureaplasma-igg-iga-igm", name: "Уреаплазма IgG / IgA / IgM", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "ureaplasma", priceFrom: 1400, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "ureaplasma-avidnost", name: "Уреаплазма Авидность", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "ureaplasma", priceFrom: 3600, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "ureaplasma-cik", name: "Уреаплазма ЦИК", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "ureaplasma", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // Гонорея
+  { slug: "gonoreya-igg", name: "Гонорея IgG", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "gonoreya", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "gonoreya-avidnost", name: "Гонорея Авидность", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "gonoreya", priceFrom: 3600, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "gonoreya-cik", name: "Гонорея ЦИК", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "gonoreya", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "gonoreya-sp-ige", name: "Гонорея Sp.IgE", categorySlug: "infekcii", subcategorySlug: "drugie-urogenitalnye", groupKey: "gonoreya", priceFrom: 2000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // 🦠 Вирусные инфекции — Цитомегаловирус (CMV)
+  { slug: "cmv-igg-iga-igm", name: "Цитомегаловирус (CMV) IgG / IgA / IgM", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "cmv", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "cmv-sp-ige", name: "Цитомегаловирус (CMV) Sp.IgE", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "cmv", priceFrom: 2000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "cmv-avidnost", name: "Цитомегаловирус (CMV) Авидность", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "cmv", priceFrom: 3600, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "cmv-cik", name: "Цитомегаловирус (CMV) ЦИК", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "cmv", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // ВПГ 1/2 (Герпес)
+  { slug: "vpg-1-2-igg-igm", name: "ВПГ 1/2 (Герпес) IgG / IgM", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "vpg-1-2", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "vpg-1-2-sp-ige", name: "ВПГ 1/2 (Герпес) Sp.IgE", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "vpg-1-2", priceFrom: 2000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "vpg-1-2-avidnost", name: "ВПГ 1/2 (Герпес) Авидность", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "vpg-1-2", priceFrom: 3600, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // Вирус Эпштейна-Барр (ВЭБ)
+  { slug: "veb-vca-igg-igm", name: "ВЭБ VCA IgG / IgM", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "veb", priceFrom: 2500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "veb-ea-igg", name: "ВЭБ EA IgG", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "veb", priceFrom: 2500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "veb-na-igg", name: "ВЭБ NA IgG", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "veb", priceFrom: 2500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "veb-avidnost", name: "ВЭБ Авидность", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "veb", priceFrom: 5000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "veb-cik", name: "ВЭБ ЦИК", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "veb", priceFrom: 5500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // Варицелла-Зостер, COVID-19
+  { slug: "varicella-zoster-igg-igm", name: "Варицелла-Зостер IgG / IgM", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "varicella-zoster", priceFrom: 3000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "covid-19-igg-igm-iga", name: "COVID-19 IgG / IgM / IgA", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "covid-19", priceFrom: 3000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "covid-19-igg-avidnost", name: "COVID-19 IgG (авидность)", categorySlug: "infekcii", subcategorySlug: "virusnye-infekcii", groupKey: "covid-19", priceFrom: 6000, duration: "3–5 дней", material: MATERIAL_BLOOD },
+  // 🧬 Вирусные гепатиты
+  { slug: "gepatit-a-igm", name: "Гепатит A (IgM)", categorySlug: "infekcii", subcategorySlug: "virusnye-gepatity", groupKey: "gepatit-a", priceFrom: 2500, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "gepatit-b-hbsag", name: "Гепатит B HBsAg", categorySlug: "infekcii", subcategorySlug: "virusnye-gepatity", groupKey: "gepatit-b", priceFrom: 1800, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "gepatit-b-antitela", name: "Гепатит B Антитела", categorySlug: "infekcii", subcategorySlug: "virusnye-gepatity", groupKey: "gepatit-b", priceFrom: 2000, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "gepatit-c-at-core-ns", name: "Гепатит C AT / Core / NS", categorySlug: "infekcii", subcategorySlug: "virusnye-gepatity", groupKey: "gepatit-c", priceFrom: 1800, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "gepatit-d-e-igg-igm", name: "Гепатит D / E IgG / IgM", categorySlug: "infekcii", subcategorySlug: "virusnye-gepatity", groupKey: "gepatit-d-e", priceFrom: 2500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // 🧫 Паразитарные инфекции
+  { slug: "parazity-igg-iga-igm", name: "Паразиты (Токсоплазма, Лямблии, Аскарида, Эхинококк, Описторхи, Токсокара и др.) IgG / IgA / IgM", categorySlug: "infekcii", subcategorySlug: "parazitarnye", groupKey: "parazity", priceFrom: 1800, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "parazity-avidnost", name: "Паразиты Авидность", categorySlug: "infekcii", subcategorySlug: "parazitarnye", groupKey: "parazity", priceFrom: 3600, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "parazity-cik", name: "Паразиты ЦИК", categorySlug: "infekcii", subcategorySlug: "parazitarnye", groupKey: "parazity", priceFrom: 3400, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "parazity-sp-ige", name: "Паразиты Sp.IgE", categorySlug: "infekcii", subcategorySlug: "parazitarnye", groupKey: "parazity", priceFrom: 1200, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // 🧪 Гормоны — Репродуктивные
+  { slug: "lh-fsg-prolaktin-testosteron", name: "ЛГ / ФСГ / Пролактин / Тестостерон", categorySlug: "gormony", subcategorySlug: "reproduktivnye", groupKey: "lh-fsg-prolaktin-testosteron", priceFrom: 2000, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "estradiol", name: "Эстрадиол", categorySlug: "gormony", subcategorySlug: "reproduktivnye", groupKey: "estradiol", priceFrom: 3000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "amg", name: "АМГ", categorySlug: "gormony", subcategorySlug: "reproduktivnye", groupKey: "amg", priceFrom: 8000, duration: "3–5 дней", material: MATERIAL_BLOOD },
+  // Щитовидная железа
+  { slug: "ttg", name: "ТТГ", categorySlug: "gormony", subcategorySlug: "shhitovidnaja", groupKey: "ttg", priceFrom: 1800, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "t3-t4", name: "Т3 / Т4", categorySlug: "gormony", subcategorySlug: "shhitovidnaja", groupKey: "t3-t4", priceFrom: 1600, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "antitela-shhitovidnoj", name: "Антитела к щитовидной железе", categorySlug: "gormony", subcategorySlug: "shhitovidnaja", groupKey: "antitela-shhitovidnoj", priceFrom: 2000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "trab", name: "TRAb", categorySlug: "gormony", subcategorySlug: "shhitovidnaja", groupKey: "trab", priceFrom: 8000, duration: "5–7 дней", material: MATERIAL_BLOOD },
+  // 🧬 Онкомаркеры
+  { slug: "psa", name: "ПСА", categorySlug: "onkomarkery", priceFrom: 2500, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "ca-125", name: "СА-125", categorySlug: "onkomarkery", priceFrom: 2500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "afp", name: "АФП", categorySlug: "onkomarkery", priceFrom: 2500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "rea", name: "РЭА", categorySlug: "onkomarkery", priceFrom: 2500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "ca-72-4", name: "СА 72-4", categorySlug: "onkomarkery", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "nse", name: "NSE", categorySlug: "onkomarkery", priceFrom: 4000, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  { slug: "ferritin", name: "Ферритин", categorySlug: "onkomarkery", priceFrom: 2500, duration: DURATION_1_2, material: MATERIAL_BLOOD },
+  // 🩺 Биохимия крови
+  { slug: "glukoza", name: "Глюкоза", categorySlug: "biokhimija", priceFrom: 1000, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "alt-ast", name: "АЛТ / АСТ", categorySlug: "biokhimija", priceFrom: 1000, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "kreatinin", name: "Креатинин", categorySlug: "biokhimija", priceFrom: 1000, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "holesterin", name: "Холестерин", categorySlug: "biokhimija", priceFrom: 1000, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "lpvp-lpnp", name: "ЛПВП / ЛПНП", categorySlug: "biokhimija", priceFrom: 1200, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "glikirovannyj-gemoglobin", name: "Гликированный гемоглобин", categorySlug: "biokhimija", priceFrom: 5000, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "c-reaktivnyj-belok", name: "C-реактивный белок", categorySlug: "biokhimija", priceFrom: 1700, duration: DURATION_1, material: MATERIAL_BLOOD },
+  // 🧾 Общие анализы
+  { slug: "oak", name: "ОАК", categorySlug: "gematologija", priceFrom: 1800, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "oam", name: "ОАМ", categorySlug: "gematologija", priceFrom: 1500, duration: DURATION_1, material: MATERIAL_URINE },
+  { slug: "koagulogramma", name: "Коагулограмма", categorySlug: "gematologija", priceFrom: 3500, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "gruppa-krovi", name: "Группа крови", categorySlug: "gematologija", priceFrom: 1100, duration: DURATION_1, material: MATERIAL_BLOOD },
+  { slug: "immunogramma", name: "Иммунограмма", categorySlug: "immunologija", priceFrom: 40000, duration: "5–7 дней", material: MATERIAL_BLOOD },
+  // 🧷 Дополнительно
+  { slug: "zabor-krovi", name: "Забор крови", categorySlug: "dopolnitelno", priceFrom: 500, duration: DURATION_1, material: MATERIAL_BLOOD },
 ]
 
 /** Категории с количеством анализов, посчитанным по ANALYZES */
@@ -108,6 +177,104 @@ export const CATEGORIES: Category[] = CATEGORY_BASE.map((cat) => ({
 
 export function getCategoryBySlug(slug: string): Category | undefined {
   return CATEGORIES.find((c) => c.slug === slug)
+}
+
+export function getSubcategoriesByCategory(categorySlug: string): Subcategory[] {
+  return SUBCATEGORIES.filter((s) => s.categorySlug === categorySlug)
+}
+
+export function getSubcategoryBySlug(slug: string): Subcategory | undefined {
+  return SUBCATEGORIES.find((s) => s.slug === slug)
+}
+
+export function getSubgroupDisplayName(subcategorySlug: string, groupKey: string): string {
+  return SUBGROUP_DISPLAY_NAMES[subcategorySlug]?.[groupKey] ?? groupKey
+}
+
+/** Анализы категории, сгруппированные по подкатегориям и группам (для категорий с подкатегориями) */
+export function getAnalyzesGroupedBySubcategory(categorySlug: string): {
+  subcategory: Subcategory
+  groups: { groupKey: string; groupName: string; analyzes: Analyze[] }[]
+}[] {
+  const subcategories = getSubcategoriesByCategory(categorySlug)
+  if (subcategories.length === 0) return []
+
+  const analyzes = getAnalyzesByCategory(categorySlug)
+  return subcategories.map((sub) => {
+    const subAnalyzes = analyzes.filter((a) => a.subcategorySlug === sub.slug)
+    const groupKeys = [...new Set(subAnalyzes.map((a) => a.groupKey).filter(Boolean))] as string[]
+    const groups = groupKeys.map((groupKey) => ({
+      groupKey,
+      groupName: getSubgroupDisplayName(sub.slug, groupKey),
+      analyzes: subAnalyzes.filter((a) => a.groupKey === groupKey),
+    }))
+    return { subcategory: sub, groups }
+  })
+}
+
+/** Анализы одной подкатегории (для страницы подкатегории) */
+export function getAnalyzesBySubcategory(subcategorySlug: string): Analyze[] {
+  return ANALYZES.filter((a) => a.subcategorySlug === subcategorySlug)
+}
+
+/** Анализы одной группы внутри подкатегории (для страницы группы) */
+export function getAnalyzesByGroup(subcategorySlug: string, groupKey: string): Analyze[] {
+  return ANALYZES.filter(
+    (a) => a.subcategorySlug === subcategorySlug && a.groupKey === groupKey
+  )
+}
+
+/** Дерево категорий для сайдбара: категория → подкатегории → группы */
+export function getCategoryTree(): {
+  slug: string
+  name: string
+  analysisCount: number
+  subcategories?: {
+    slug: string
+    name: string
+    count: number
+    groups: { key: string; name: string; count: number }[]
+  }[]
+}[] {
+  return CATEGORIES.map((cat) => {
+    const subcats = getSubcategoriesByCategory(cat.slug)
+    if (subcats.length === 0) {
+      return { slug: cat.slug, name: cat.name, analysisCount: cat.analysisCount }
+    }
+    const subcategories = subcats.map((sub) => {
+      const groupsData = getGroupsForSubcategory(sub.slug)
+      const groups = groupsData.map((g) => ({
+        key: g.groupKey,
+        name: g.groupName,
+        count: g.analyzes.length,
+      }))
+      const count = groupsData.reduce((acc, g) => acc + g.analyzes.length, 0)
+      return { slug: sub.slug, name: sub.name, count, groups }
+    })
+    return {
+      slug: cat.slug,
+      name: cat.name,
+      analysisCount: cat.analysisCount,
+      subcategories,
+    }
+  })
+}
+
+/** Группы анализов внутри подкатегории (для страницы подкатегории) */
+export function getGroupsForSubcategory(subcategorySlug: string): {
+  groupKey: string
+  groupName: string
+  analyzes: Analyze[]
+}[] {
+  const sub = getSubcategoryBySlug(subcategorySlug)
+  if (!sub) return []
+  const analyzes = getAnalyzesBySubcategory(subcategorySlug)
+  const groupKeys = [...new Set(analyzes.map((a) => a.groupKey).filter(Boolean))] as string[]
+  return groupKeys.map((groupKey) => ({
+    groupKey,
+    groupName: getSubgroupDisplayName(subcategorySlug, groupKey),
+    analyzes: analyzes.filter((a) => a.groupKey === groupKey),
+  }))
 }
 
 export function getAnalyzesByCategory(categorySlug: string): Analyze[] {
@@ -127,7 +294,7 @@ export function getAnalyzeBySlug(slug: string): Analyze | undefined {
 }
 
 export const ANALYZE_DETAILS: Record<string, AnalyzeDetail> = {
-  "glukoza-krov": {
+  "glukoza": {
     preparation: [
       "Натощак (8–14 часов голода), можно пить воду без газа.",
       "За 24 часа исключить алкоголь, тяжёлую и жирную пищу.",

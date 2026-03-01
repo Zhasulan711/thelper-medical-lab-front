@@ -1,13 +1,36 @@
 import type { FaqItem, PopularAnalysisCard, ReviewItem } from "@/features/home/types"
+import { getAnalyzeBySlug } from "@/features/services/constants"
 
-export const MOCK_ANALYSES: PopularAnalysisCard[] = [
-  { id: "1515", title: "Клинический анализ крови: общий анализ, лейкоформула, СОЭ (с микроскопией мазка крови при наличии патологических сдвигов)", price: "530", duration: "1 календарный день" },
-  { id: "5", title: "Анализ крови. Общий анализ крови (без лейкоцитарной формулы и СОЭ) (Complete Blood Count, CBC)", price: "220", duration: "1 календарный день" },
-  { id: "116", title: "Анализ мочи общий (Анализ мочи с микроскопией осадка)", price: "270", duration: "1 календарный день" },
-  { id: "119", title: "Лейкоцитарная формула (дифференцированный подсчёт лейкоцитов, лейкоцитограмма) с микроскопией мазка крови при наличии патологических сдвигов", price: "220", duration: "1 календарный день" },
-  { id: "120", title: "Биохимический анализ крови: глюкоза, общий белок, креатинин, мочевина", price: "890", duration: "1–2 календарных дня" },
-  { id: "121", title: "Гормоны щитовидной железы: ТТГ, Т4 свободный", price: "1 100", duration: "1 календарный день" },
-]
+/** Slug'и анализов для блока "Популярные анализы" на главной (соответствуют ANALYZES) */
+const POPULAR_ANALYSIS_SLUGS = [
+  "oak",
+  "oam",
+  "glukoza",
+  "ttg",
+  "holesterin",
+  "glikirovannyj-gemoglobin",
+  "covid-19-igg-igm-iga",
+  "psa",
+] as const
+
+function formatPrice(value: number): string {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+}
+
+/** Популярные анализы — данные из реального прайса (ANALYZES) */
+export const POPULAR_ANALYSES: PopularAnalysisCard[] = POPULAR_ANALYSIS_SLUGS.map((slug) => {
+  const a = getAnalyzeBySlug(slug)!
+  return {
+    id: a.slug,
+    code: a.code,
+    title: a.name,
+    price: formatPrice(a.priceFrom),
+    duration: a.duration,
+  }
+})
+
+/** @deprecated Используйте POPULAR_ANALYSES */
+export const MOCK_ANALYSES = POPULAR_ANALYSES
 
 export const VISIBLE_COUNT = 4
 export const CARD_WIDTH = 254
