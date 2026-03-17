@@ -273,6 +273,17 @@ export function getAnalyzesByCategory(categorySlug: string): Analyze[] {
   return ANALYZES.filter((a) => a.categorySlug === categorySlug)
 }
 
+/** Поиск по названию и slug анализов (без учёта регистра). */
+export function searchAnalyses(q: string): Analyze[] {
+  const normalized = q.trim().toLowerCase()
+  if (!normalized) return []
+  return ANALYZES.filter(
+    (a) =>
+      a.name.toLowerCase().includes(normalized) ||
+      a.slug.toLowerCase().includes(normalized)
+  )
+}
+
 export function getCheckupCategories(): Category[] {
   return CATEGORIES.filter((c) => c.isCheckup)
 }
