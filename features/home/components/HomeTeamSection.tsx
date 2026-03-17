@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight, Stethoscope } from "lucide-react"
@@ -8,34 +8,92 @@ import { TEAM_MEMBERS } from "@/features/home/constants/team"
 import { inViewFadeUp } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
-const transition = { type: "spring" as const, stiffness: 320, damping: 34 }
-
 export function HomeTeamSection() {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [slideWidth, setSlideWidth] = useState(320)
   const [index, setIndex] = useState(0)
-  const touchStartX = useRef(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStartX = useRef(0)
+  const dragStartScrollLeft = useRef(0)
 
   const canPrev = index > 0
   const canNext = index < TEAM_MEMBERS.length - 1
-  const slideWidthPercent = 100 / TEAM_MEMBERS.length
 
-  const goPrev = useCallback(() => {
-    setIndex((i) => (i > 0 ? i - 1 : i))
-  }, [])
-  const goNext = useCallback(() => {
-    setIndex((i) => (i < TEAM_MEMBERS.length - 1 ? i + 1 : i))
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 0) return
+    const el = scrollRef.current
+    if (!el) return
+    e.preventDefault()
+    dragStartX.current = e.clientX
+    dragStartScrollLeft.current = el.scrollLeft
+    setIsDragging(true)
   }, [])
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX
+  useEffect(() => {
+    if (!isDragging) return
+    const el = scrollRef.current
+    if (!el) return
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const dx = dragStartX.current - e.clientX
+      el.scrollLeft = dragStartScrollLeft.current + dx
+    }
+    const handleMouseUp = () => {
+      setIsDragging(false)
+    }
+
+    document.addEventListener("mousemove", handleMouseMove)
+    document.addEventListener("mouseup", handleMouseUp)
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove)
+      document.removeEventListener("mouseup", handleMouseUp)
+    }
+  }, [isDragging])
+
+  const updateWidth = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const w = el.clientWidth
+    if (w > 0) setSlideWidth(w)
   }, [])
-  const handleTouchEnd = useCallback(
-    (e: React.TouchEvent) => {
-      const dx = e.changedTouches[0].clientX - touchStartX.current
-      if (dx > 50) goPrev()
-      else if (dx < -50) goNext()
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    updateWidth()
+    const ro = new ResizeObserver(updateWidth)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [updateWidth])
+
+  const updateIndexFromScroll = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const { scrollLeft } = el
+    const i = Math.round(scrollLeft / slideWidth)
+    setIndex(Math.max(0, Math.min(i, TEAM_MEMBERS.length - 1)))
+  }, [slideWidth])
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    updateIndexFromScroll()
+    el.addEventListener("scroll", updateIndexFromScroll)
+    return () => el.removeEventListener("scroll", updateIndexFromScroll)
+  }, [updateIndexFromScroll, slideWidth])
+
+  const scrollTo = useCallback(
+    (i: number) => {
+      const el = scrollRef.current
+      if (!el) return
+      const target = Math.max(0, Math.min(i, TEAM_MEMBERS.length - 1))
+      el.scrollTo({ left: target * slideWidth, behavior: "smooth" })
     },
-    [goPrev, goNext]
+    [slideWidth]
   )
+
+  const goPrev = useCallback(() => scrollTo(index - 1), [index, scrollTo])
+  const goNext = useCallback(() => scrollTo(index + 1), [index, scrollTo])
 
   return (
     <motion.section
@@ -57,7 +115,7 @@ export function HomeTeamSection() {
         </p>
       </div>
 
-      <div className="relative flex items-center justify-center gap-2 md:gap-4">
+      <div className="flex items-center justify-center gap-2 md:gap-4">
         <button
           type="button"
           onClick={goPrev}
@@ -71,49 +129,46 @@ export function HomeTeamSection() {
           <ChevronLeft className="size-6 md:size-7" />
         </button>
 
-        <div
-          className="relative w-full max-w-sm overflow-hidden rounded-2xl md:max-w-md"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5">
-            <div className="relative aspect-3/4 w-full bg-muted">
-              {/* Все слайды в DOM с самого начала — картинки загружаются сразу */}
-              <motion.div
-                className="flex h-full"
-                style={{ width: `${TEAM_MEMBERS.length * 100}%` }}
-                animate={{ x: `-${index * slideWidthPercent}%` }}
-                transition={transition}
+        <div className="relative w-full max-w-sm overflow-hidden rounded-2xl md:max-w-md">
+          <div
+            ref={scrollRef}
+            className={cn(
+              "scrollbar-hide flex aspect-3/4 w-full touch-pan-x overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory",
+              isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+            )}
+            style={{
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+            onMouseDown={handleMouseDown}
+          >
+            {TEAM_MEMBERS.map((member, i) => (
+              <article
+                key={i}
+                className="relative h-full shrink-0 snap-start snap-always overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5"
+                style={{ width: slideWidth }}
               >
-                {TEAM_MEMBERS.map((member, i) => (
-                  <article
-                    key={i}
-                    className="relative h-full shrink-0"
-                    style={{ width: `${slideWidthPercent}%` }}
-                  >
-                    {/* Контейнер с явными размерами (inset-0) — иначе next/image fill не рендерит у 2–6 слайда */}
-                    <div className="absolute inset-0 overflow-hidden">
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 28rem"
-                        className="object-cover"
-                        priority={i < 3}
-                      />
-                      <div
-                        className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-black/70 via-black/20 to-transparent"
-                        aria-hidden
-                      />
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                      <p className="font-semibold drop-shadow-sm">{member.name}</p>
-                      <p className="mt-0.5 text-sm text-white/90">{member.role}</p>
-                    </div>
-                  </article>
-                ))}
-              </motion.div>
-            </div>
+                <div className="absolute inset-0 bg-muted">
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 28rem"
+                    className="object-cover"
+                    priority={i < 3}
+                  />
+                  <div
+                    className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-black/70 via-black/20 to-transparent"
+                    aria-hidden
+                  />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                  <p className="font-semibold drop-shadow-sm">{member.name}</p>
+                  <p className="mt-0.5 text-sm text-white/90">{member.role}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
 
@@ -137,7 +192,7 @@ export function HomeTeamSection() {
             <button
               key={i}
               type="button"
-              onClick={() => setIndex(i)}
+              onClick={() => scrollTo(i)}
               className={cn(
                 "rounded-full transition-all duration-200",
                 i === index
