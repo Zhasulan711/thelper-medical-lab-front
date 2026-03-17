@@ -1,6 +1,7 @@
 import medicalBuilding from "@/assets/images/ironwood-medical.jpg"
 import { HomeHero } from "@/features/home/components/HomeHero"
 import { HomeStatsWhy } from "@/features/home/components/HomeStatsWhy"
+import { HomeTeamSection } from "@/features/home/components/HomeTeamSection"
 import { HomeCategories } from "@/features/home/components/HomeCategories"
 import { PopularAnalysesCarousel } from "@/features/home/components/PopularAnalysesCarousel"
 import { FaqSection } from "@/features/home/components/FaqSection"
@@ -13,6 +14,8 @@ export default function Home() {
       <HomeHero imageSrc={medicalBuilding} />
 
       <HomeStatsWhy />
+
+      <HomeTeamSection />
 
       <PopularAnalysesCarousel />
 
