@@ -29,6 +29,7 @@ export default async function LocationDetailPage({ params }: Props) {
 
   const routeUrl = get2GISRouteUrl(location.lat, location.lng)
   const pointUrl = get2GISPointUrl(location.lat, location.lng)
+  const whatsappHref = `https://wa.me/${location.phone.replace(/\D/g, "")}`
 
   return (
     <main className="min-h-screen bg-background">
@@ -74,7 +75,12 @@ export default async function LocationDetailPage({ params }: Props) {
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone className="size-5 shrink-0 text-[#00a9bf]" aria-hidden />
-                  <a href={`tel:${location.phone.replace(/\s/g, "")}`} className="text-[#00a9bf] hover:underline">
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#00a9bf] hover:underline"
+                  >
                     {location.phone}
                   </a>
                 </li>

@@ -19,7 +19,7 @@ export const LOCATIONS: Location[] = [
     name: "T-Helper",
     address: "г. Алматы, ул. Аманжол 28",
     hours: "Пн–Сб: 08:00–12:00, Вс: выходной",
-    phone: "+7 (777) 276-40-40",
+    phone: "+7 (705) 149-82-24",
     howToGet: "Ориентир: ул. Аманжол, 28. Уточните удобный маршрут по телефону или в WhatsApp.",
     image: clinicImage.src,
     lat: 43.209465,

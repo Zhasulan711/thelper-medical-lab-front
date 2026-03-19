@@ -29,6 +29,7 @@ export function LocationsListAnimated({ locations }: { locations: Location[] }) 
 
 function LocationCard({ location }: { location: Location }) {
   const routeUrl = get2GISRouteUrl(location.lat, location.lng)
+  const whatsappHref = `https://wa.me/${location.phone.replace(/\D/g, "")}`
 
   return (
     <article className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
@@ -60,7 +61,12 @@ function LocationCard({ location }: { location: Location }) {
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="size-4 shrink-0" aria-hidden />
-                <a href={`tel:${location.phone.replace(/\s/g, "")}`} className="text-[#00a9bf] hover:underline">
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#00a9bf] hover:underline"
+                >
                   {location.phone}
                 </a>
               </p>
