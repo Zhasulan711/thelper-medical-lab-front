@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, type ChangeEvent, type FormEvent } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight, User } from "lucide-react"
 import { REVIEWS } from "@/features/home/constants"
@@ -8,6 +8,12 @@ import { inViewFadeUp } from "@/lib/animations"
 
 export function ReviewsSection() {
   const [index, setIndex] = useState(0)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    text: "",
+  })
 
   const goPrev = useCallback(() => {
     setIndex((i) => (i <= 0 ? REVIEWS.length - 1 : i - 1))
@@ -15,6 +21,20 @@ export function ReviewsSection() {
 
   const goNext = useCallback(() => {
     setIndex((i) => (i >= REVIEWS.length - 1 ? 0 : i + 1))
+  }, [])
+
+  const handleInputChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = event.target
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    },
+    []
+  )
+
+  const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsSubmitted(true)
+    setFormData({ name: "", text: "" })
   }, [])
 
   const review = REVIEWS[index]
@@ -74,6 +94,62 @@ export function ReviewsSection() {
           >
             <ChevronRight className="size-6" />
           </button>
+        </div>
+
+        <div className="mt-8">
+          <button
+            type="button"
+            onClick={() => {
+              setIsFormOpen((prev) => !prev)
+              setIsSubmitted(false)
+            }}
+            className="cursor-pointer rounded-xl bg-white px-5 py-3 font-semibold text-[#36807f] transition-colors hover:bg-white/90"
+          >
+            Оставить отзыв
+          </button>
+
+          <AnimatePresence>
+            {isFormOpen ? (
+              <motion.form
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+                onSubmit={handleSubmit}
+                className="mx-auto mt-5 flex max-w-xl flex-col gap-3 rounded-2xl bg-white/10 p-4 text-left"
+              >
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Ваше имя"
+                  className="w-full rounded-xl border border-white/30 bg-white/95 px-4 py-3 text-[#1f3f3f] outline-none transition focus:border-white"
+                  required
+                />
+                <textarea
+                  name="text"
+                  value={formData.text}
+                  onChange={handleInputChange}
+                  placeholder="Ваш отзыв"
+                  rows={4}
+                  className="w-full resize-none rounded-xl border border-white/30 bg-white/95 px-4 py-3 text-[#1f3f3f] outline-none transition focus:border-white"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="cursor-pointer self-start rounded-xl bg-white px-5 py-3 font-semibold text-[#36807f] transition-colors hover:bg-white/90"
+                >
+                  Отправить
+                </button>
+                {isSubmitted ? (
+                  <p className="text-sm text-white/90">
+                    Спасибо! Отзыв отправлен.
+                  </p>
+                ) : null}
+              </motion.form>
+            ) : null}
+          </AnimatePresence>
         </div>
       </div>
     </motion.section>

@@ -6,7 +6,7 @@ import { BusinessLeadForm } from "@/features/business/components/BusinessLeadFor
 export const metadata = {
   title: "Корпоративным клиентам (B2B) | T-Helper",
   description:
-    "Услуги для компаний: корпоративные обследования, выездная служба, условия договора. Оставьте заявку на сотрудничество.",
+    "Сотрудничество с медицинскими центрами: забор биоматериала на стороне партнёра, доставка нашим водителем, лабораторные исследования в T-Helper.",
 }
 
 export default function BusinessPage() {
@@ -32,7 +32,7 @@ export default function BusinessPage() {
           <section>
             <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
               <Briefcase className="size-5 text-[#00a9bf]" />
-              Услуги для компаний
+              Сотрудничество с медцентрами
             </h2>
             <ul className="list-inside list-disc space-y-2 text-muted-foreground">
               {B2B_SERVICES.map((item, i) => (
@@ -67,7 +67,7 @@ export default function BusinessPage() {
               Оставить заявку
             </h2>
             <p className="mb-6 text-sm text-muted-foreground">
-              Заполните форму — менеджер свяжется с вами для обсуждения условий и подготовки коммерческого предложения.
+              Заполните форму — менеджер свяжется с вами для согласования условий сотрудничества, графика забора проб и формата передачи результатов.
             </p>
             <BusinessLeadForm />
           </section>

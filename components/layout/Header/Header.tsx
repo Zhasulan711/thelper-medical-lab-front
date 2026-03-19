@@ -22,8 +22,8 @@ const NAV_ITEMS = [
     { path: "/contacts", label: "Контакты" },
 ] as const
 
-const PHONE = "+7 (777) 777-77-77"
-const PHONE_HREF = "tel:+77777777777"
+const PHONE = "+7 (777) 276-40-40"
+const PHONE_HREF = "https://wa.me/77772764040"
 
 export function Header() {
     const pathname = usePathname()

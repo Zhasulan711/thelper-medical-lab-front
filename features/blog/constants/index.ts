@@ -1,4 +1,7 @@
 import type { BlogPost } from "@/features/blog/types"
+import medicalBlogImage from "@/assets/images/medical-blog.jpg"
+import healthcareBlogImage from "@/assets/images/healthcare-blog.jpg"
+import healthCheckUpBlogImage from "@/assets/images/health-check-up-blog.jpg"
 
 const CATEGORY_LABELS: Record<BlogPost["category"], string> = {
   preparation: "Подготовка к анализам",
@@ -17,6 +20,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: "Простые правила: натощак, без алкоголя, спокойный режим. Что можно и что нельзя перед сдачей крови.",
     date: "2025-02-15",
     category: "preparation",
+    image: medicalBlogImage.src,
     content: `
 Кровь сдаётся натощак — не менее 8 часов (лучше 10–12) после последнего приёма пищи. Утром можно пить воду без газа.
 
@@ -39,6 +43,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: "Кратко о гемоглобине, эритроцитах, лейкоцитах, тромбоцитах и СОЭ. Когда стоит обратиться к врачу.",
     date: "2025-02-10",
     category: "interpretation",
+    image: healthcareBlogImage.src,
     content: `
 Общий анализ крови (ОАК) — базовое исследование. Интерпретировать результаты должен врач с учётом жалоб и других обследований. Ниже — лишь ориентир.
 
@@ -61,6 +66,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: "Суточные ритмы, голодание и точность результатов. Как выбрать время визита в лабораторию.",
     date: "2025-02-01",
     category: "useful",
+    image: healthCheckUpBlogImage.src,
     content: `
 Многие показатели крови зависят от времени суток и приёма пищи. Утренняя сдача натощак позволяет:
 

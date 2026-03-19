@@ -1,4 +1,7 @@
 import type { Promotion } from "@/features/promotions/types"
+import promotionalCoverImage from "@/assets/images/promotional-cover.jpg"
+import healthcarePromoImage from "@/assets/images/healthcare-promo.jpg"
+import medicalReferralProgramImage from "@/assets/images/medical-referral-programm.jpg"
 
 export const PROMOTIONS: Promotion[] = [
   {
@@ -7,6 +10,7 @@ export const PROMOTIONS: Promotion[] = [
     excerpt: "При заказе любого чек-апа до конца месяца — скидка 15%. Действует на все комплексы обследований.",
     dateFrom: "2025-03-01",
     dateTo: "2025-03-31",
+    image: promotionalCoverImage.src,
     content: `
 Акция действует с 1 по 31 марта 2025 года.
 
@@ -17,7 +21,7 @@ export const PROMOTIONS: Promotion[] = [
 • Запись и оплата — в период действия акции.
 • Результаты выдаются в стандартные сроки.
 
-Записаться на чек-ап можно по телефону +7 (777) 777-77-77 или через форму на сайте. Укажите промокод CHEKAP15 при записи.
+Записаться на чек-ап можно по телефону +7 (777) 276-40-40 или через форму на сайте. Укажите промокод CHEKAP15 при записи.
     `.trim(),
   },
   {
@@ -26,6 +30,7 @@ export const PROMOTIONS: Promotion[] = [
     excerpt: "При заказе анализов на сумму от 15 000 ₸ выезд медсестры на дом — бесплатно.",
     dateFrom: "2025-03-01",
     dateTo: "2025-06-30",
+    image: healthcarePromoImage.src,
     content: `
 Акция действует до 30 июня 2025 года.
 
@@ -44,6 +49,7 @@ export const PROMOTIONS: Promotion[] = [
     title: "Подарок за рекомендацию",
     excerpt: "Приведите друга — получите скидку 10% на следующий визит. Друг тоже получит 10% на первый заказ.",
     dateFrom: "2025-01-01",
+    image: medicalReferralProgramImage.src,
     content: `
 Программа лояльности для наших пациентов.
 

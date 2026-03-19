@@ -17,7 +17,7 @@ export function HomeTeamSection() {
   const dragStartScrollLeft = useRef(0)
 
   const canPrev = index > 0
-  const canNext = index < TEAM_MEMBERS.length - 1
+  const canNext = TEAM_MEMBERS.length > 1
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) return
@@ -93,7 +93,10 @@ export function HomeTeamSection() {
   )
 
   const goPrev = useCallback(() => scrollTo(index - 1), [index, scrollTo])
-  const goNext = useCallback(() => scrollTo(index + 1), [index, scrollTo])
+  const goNext = useCallback(
+    () => scrollTo(index >= TEAM_MEMBERS.length - 1 ? 0 : index + 1),
+    [index, scrollTo]
+  )
 
   return (
     <motion.section

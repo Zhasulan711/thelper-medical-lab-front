@@ -4,7 +4,7 @@ import fixedPhoto2 from "@/assets/images/fixed-photo-2.png"
 import fixedPhoto3 from "@/assets/images/fixed-photo-3.png"
 import fixedPhoto4 from "@/assets/images/fixed-photo-4.png"
 import fixedPhoto5 from "@/assets/images/fixed-photo-5.png"
-import fixedPhoto6 from "@/assets/images/fixed-photo-6.png"
+import fixedPhoto6 from "@/assets/images/fixed-photo-6.jpg"
 
 export type TeamMember = {
   image: StaticImageData

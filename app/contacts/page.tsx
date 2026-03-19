@@ -5,14 +5,13 @@ import {
   CONTACT_EMAIL,
   CONTACT_MESSENGERS,
   CONTACT_ADDRESS,
-  REQUISITES,
 } from "@/features/contacts/constants"
 import { ContactForm } from "@/features/contacts/components/ContactForm"
 
 export const metadata = {
   title: "Контакты | T-Helper",
   description:
-    "Телефоны, email, мессенджеры лаборатории T-Helper. Форма обратной связи. Реквизиты для B2B.",
+    "Телефоны, email, мессенджеры и адрес лаборатории T-Helper. Форма обратной связи.",
 }
 
 export default function ContactsPage() {
@@ -92,49 +91,6 @@ export default function ContactsPage() {
               </Link>
             </section>
 
-            <section className="rounded-xl border border-border bg-muted/20 p-6">
-              <h2 className="mb-4 text-lg font-semibold text-foreground">
-                Реквизиты (для B2B)
-              </h2>
-              <dl className="grid gap-2 text-sm">
-                <div>
-                  <dt className="text-muted-foreground">Наименование</dt>
-                  <dd className="font-medium">{REQUISITES.name}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">БИН</dt>
-                  <dd>{REQUISITES.bin}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">ИИК</dt>
-                  <dd>{REQUISITES.iik}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">Банк</dt>
-                  <dd>{REQUISITES.bank}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">БИК</dt>
-                  <dd>{REQUISITES.bik}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">Юридический адрес</dt>
-                  <dd>{REQUISITES.address}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">Контакт для B2B</dt>
-                  <dd>
-                    <a href={`tel:${REQUISITES.phone.replace(/\s/g, "")}`} className="text-[#00a9bf] hover:underline">
-                      {REQUISITES.phone}
-                    </a>
-                    {" · "}
-                    <a href={`mailto:${REQUISITES.email}`} className="text-[#00a9bf] hover:underline">
-                      {REQUISITES.email}
-                    </a>
-                  </dd>
-                </div>
-              </dl>
-            </section>
           </div>
 
           <aside className="lg:sticky lg:top-6 lg:self-start">

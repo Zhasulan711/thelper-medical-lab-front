@@ -27,7 +27,7 @@ const FOOTER_DOCS: readonly { href: string; label: string }[] = [
 
 const FOOTER_SOCIAL_LINKS: { href: string; label: string; Icon: IconComponent }[] = [
   { href: "https://t.me/your_username", label: "Telegram", Icon: TelegramIcon },
-  { href: "https://wa.me/77000000000", label: "WhatsApp", Icon: WhatsAppIcon },
+  { href: "https://wa.me/77772764040", label: "WhatsApp", Icon: WhatsAppIcon },
 ]
 
 export function Footer() {
@@ -69,11 +69,11 @@ export function Footer() {
             <ul className="mt-4 flex flex-col gap-3">
               <li>
                 <a
-                  href="tel:+77777777777"
+                  href="tel:+77772764040"
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   <Phone className="size-4 shrink-0" />
-                  +7 (777) 777-77-77
+                  +7 (777) 276-40-40
                 </a>
               </li>
               <li>
@@ -137,6 +137,9 @@ export function Footer() {
           variants={staggerItem}
         >
           © {new Date().getFullYear()} T-Helper. Все права защищены.
+          <p className="mt-1">
+            Деятельность осуществляет ТОО «ОМИКРОН 3Д», БИН 191140005638.
+          </p>
         </motion.div>
       </div>
     </motion.footer>

@@ -1,18 +1,20 @@
 import Link from "next/link"
 import Image from "next/image"
+import receptionImage from "@/assets/images/reception.jpg"
+import collectionRoomImage from "@/assets/images/collection-room.jpg"
+import clinicalLaboratoryImage from "@/assets/images/clinical-laboratory.jpg"
 import {
   ABOUT_HISTORY,
   ABOUT_MISSION,
-  ABOUT_EQUIPMENT,
   ABOUT_QUALITY,
   ABOUT_PARTNERS,
 } from "@/features/about/constants"
-import { Microscope, Award, Building2 } from "lucide-react"
+import { Award, Building2, CalendarClock, Images } from "lucide-react"
 
 export const metadata = {
   title: "О нас | T-Helper",
   description:
-    "История и миссия лаборатории T-Helper. Оборудование, стандарты качества, партнёры.",
+    "История и миссия лаборатории T-Helper с 2007 года. Стандарты качества, партнёрства и фотогалерея лаборатории.",
 }
 
 export default function AboutPage() {
@@ -33,8 +35,9 @@ export default function AboutPage() {
 
         <div className="space-y-12">
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-foreground">
-              История и миссия
+            <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+              <CalendarClock className="size-5 text-[#00a9bf]" />
+              Лаборатория с 2007 года
             </h2>
             <div className="space-y-4 text-muted-foreground">
               <p>{ABOUT_HISTORY}</p>
@@ -44,45 +47,49 @@ export default function AboutPage() {
 
           <section>
             <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
-              <Microscope className="size-5 text-[#00a9bf]" />
-              Оборудование
+              <Images className="size-5 text-[#00a9bf]" />
+              Лабораторные кабинеты
             </h2>
             <p className="mb-6 text-sm text-muted-foreground">
-              Мы используем современные анализаторы и реагенты ведущих производителей для точных результатов.
+              Рабочие зоны лаборатории и приёмные кабинеты. Ниже размещены визуальные материалы для раздела «О нас».
             </p>
-            <ul className="grid gap-6 sm:grid-cols-2">
-              {ABOUT_EQUIPMENT.map((item, i) => (
-                <li
-                  key={i}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                {
+                  title: "Ресепшн и ожидание",
+                  src: receptionImage,
+                },
+                {
+                  title: "Кабинет забора биоматериала",
+                  src: collectionRoomImage,
+                },
+                {
+                  title: "Внутренняя лабораторная зона",
+                  src: clinicalLaboratoryImage,
+                },
+              ].map((item) => (
+                <article
+                  key={item.title}
                   className="overflow-hidden rounded-xl border border-border bg-card shadow-sm"
                 >
-                  {item.image ? (
-                    <div className="relative aspect-video bg-muted">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex aspect-video min-h-[120px] items-center justify-center bg-muted text-muted-foreground">
-                      <Microscope className="size-10" />
-                    </div>
-                  )}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-foreground">{item.name}</h3>
-                    {item.manufacturer && (
-                      <p className="mt-1 text-sm text-muted-foreground">{item.manufacturer}</p>
-                    )}
-                    {item.description && (
-                      <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
-                    )}
+                  <div className="relative aspect-video bg-muted">
+                    <Image
+                      src={item.src}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                    />
                   </div>
-                </li>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-foreground">{item.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Фото блока для презентации лаборатории.
+                    </p>
+                  </div>
+                </article>
               ))}
-            </ul>
+            </div>
           </section>
 
           <section>

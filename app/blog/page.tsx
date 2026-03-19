@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { getAllPosts, getCategoryLabel } from "@/features/blog/constants"
+import { getAllPosts } from "@/features/blog/constants"
 import { BlogGridAnimated } from "@/features/blog/components/BlogGridAnimated"
 
 export const metadata = {
