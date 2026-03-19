@@ -67,7 +67,8 @@ export default async function PromotionDetailPage({ params }: Props) {
                 alt={promo.title}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, 672px"
+                sizes="(max-width: 768px) 100vw, 736px"
+                quality={65}
                 priority
               />
             </div>

@@ -37,7 +37,8 @@ export function BlogGridAnimated({ posts }: { posts: BlogPost[] }) {
                     alt={post.title}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 640px) 100vw, 50vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
+                    quality={60}
                   />
                 </div>
               ) : (
